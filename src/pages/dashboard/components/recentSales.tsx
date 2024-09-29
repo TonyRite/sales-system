@@ -7,7 +7,9 @@ interface RecordModel {
   // Define the properties of the RecordModel type here
   name:string;
   phone: string,
-  money: number
+  money: number,
+  Gunia:number,
+  Date_entered: string,
 }
 type Customer = {
   id: string;
@@ -18,18 +20,22 @@ type Customer = {
   Name: string;
   Phone_Number: string;
   Money_Amount: number;
+  Gunia: number;
+
 };
 
 export function RecentSales() {
   const [Customers, setCustomers] = useState<RecordModel[]>([]);
   const getCustomers = async()=>{
     pb.autoCancellation(false);
-    const customers = await pb.collection('customers').getList(1, 50, {
+    const customers = await pb.collection('deni').getList(1, 50, {
     });
     setCustomers(customers.items.map((item) => ({ 
       name: item.Name,
       phone: item.Phone_Number,
-      money: item.Money_Amount
+      money: item.Money_Amount,
+      Gunia:item.Gunia,
+      Date_entered: item.Date_entered,
     })));
     console.log(Customers);
   }
@@ -48,6 +54,8 @@ export function RecentSales() {
           </p>
         </div>
         <div className='ml-auto font-medium'>TSh {customer.money}</div>
+        <div className='ml-auto font-medium'>{customer.Gunia}</div>
+        <div className='ml-auto font-medium'>{customer.Date_entered.split(' ')[0]}</div>
       </div>
     )}
     </div>

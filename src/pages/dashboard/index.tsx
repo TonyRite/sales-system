@@ -12,9 +12,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ThemeSwitch from '@/components/theme-switch'
 // import { TopNav } from '@/components/top-nav'
 import { UserNav } from '@/components/user-nav'
-import { RecentSales } from './components/recent-sales'
+
 import { Overview } from './components/overview'
 import { TableDemo } from './components/tableDemo'
+import { InputForm } from './inputForm'
+import { RecentSales } from './components/recentsales'
 
 export default function Dashboard() {
   return (
@@ -430,6 +432,7 @@ export default function Dashboard() {
           <TabsContent value='customers' className='space-y-4'>
           <div className='flex items-center space-x-2'>
             <Button>Add Customer</Button>
+            <InputForm/>
           </div>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-5'>
               <Card>

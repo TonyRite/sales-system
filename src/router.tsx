@@ -18,7 +18,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element:<ProtectedRoute/>,
-    errorElement: <GeneralError />,
+    // errorElement: <GeneralError />,
     children: [
       {
         index: true,
@@ -27,9 +27,27 @@ const router = createBrowserRouter([
         }),
       },
       {
-        path: 'tasks',
+        path: 'OilProduced',
         lazy: async () => ({
-          Component: (await import('@/pages/tasks')).default,
+          Component: (await import('@/pages/OilProduced')).default,
+        }),
+      },
+      {
+        path: 'expenses',
+        lazy: async () => ({
+          Component: (await import('@/pages/expenses')).default,
+        }),
+      },
+      {
+        path: 'mbeya',
+        lazy: async () => ({
+          Component: (await import('@/pages/Mbeya')).default,
+        }),
+      },
+      {
+        path: 'loans',
+        lazy: async () => ({
+          Component: (await import('@/pages/Loans')).default,
         }),
       },
       {
