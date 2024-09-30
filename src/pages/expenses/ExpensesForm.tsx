@@ -137,6 +137,7 @@ export function InputForm({ onClose }: InputFormProps) {
               <div className="col-span-3">
                 <Input
                   id="date"
+                  type='date'
                   {...register('date')}
                   placeholder="format year-month-date | 2024-10-01"
                   className="col-span-3"
