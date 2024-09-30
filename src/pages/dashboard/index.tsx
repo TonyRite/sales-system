@@ -16,7 +16,8 @@ import { UserNav } from '@/components/user-nav'
 import { Overview } from './components/overview'
 import { TableDemo } from './components/tableDemo'
 import { InputForm } from './inputForm'
-import { RecentSales } from './components/recentsales'
+import { RecentSales } from './components/recentSales'
+
 
 export default function Dashboard() {
   return (
