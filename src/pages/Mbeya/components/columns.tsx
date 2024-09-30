@@ -30,11 +30,11 @@ export const columns: ColumnDef<sales>[] = [
   //   enableHiding: false,
   // },
   {
-    accessorKey: 'id',
+    accessorKey: 'Did',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='ID' />
     ),
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('Did')}</div>,
     enableSorting: false,
     enableHiding: false,
   },

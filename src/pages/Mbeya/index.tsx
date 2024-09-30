@@ -6,21 +6,14 @@ import { DataTable } from './components/data-table'
 import { columns } from './components/columns'
 import pb from '@/api/Pocketbase'
 import { useEffect, useState } from 'react'
-export interface RecordModel {
-  // Define the properties of the RecordModel type here
-  id:string;
-  name:string;
-  phone: string,
-  money: number,
-  Gunia:number,
-  Date_entered: string,
-}
+import { InputForm } from './MbeyaForm'
 
 export interface SalesRecord {
   Car_Drive_Names: string;   // Name associated with the car drive
   Date_Sent: string;         // Date when the data was sent
   Quantity: number;          // Quantity related to the sale
-  id: number;                // Unique identifier for the record
+  id: string;                // Unique identifier for the record
+  Did:number
 }
 
 
@@ -32,7 +25,8 @@ export default function Tasks() {
     pb.autoCancellation(false);
     const customers = await pb.collection('Sales').getList(1, 50, {});
     setSales(customers.items.map((item, index) => ({
-      id: (index + 1), 
+      Did: (index + 1), 
+      id:item.id,
       Car_Drive_Names: item.Car_Drive_Names,   
       Date_Sent: item.Date_Sent,               
       Quantity: item.Quantity,                
@@ -45,6 +39,7 @@ export default function Tasks() {
 
   // Transform the customers to match the expected format for DataTable
   const transformedCustomers = Sales.map(sale => ({
+    Did:sale.Did,
     id:sale.id,                            // Unique identifier for the sales record
     Car_Drive_Names: sale.Car_Drive_Names, // Mapping the car drive names
     Date_Sent: sale.Date_Sent,             // Mapping the date when the data was sent
@@ -69,6 +64,7 @@ export default function Tasks() {
               Here&apos;s a list of Oil sent to Mbeya
             </p>
           </div>
+          <InputForm onClose={getSales} />
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
           <DataTable data={transformedCustomers} columns={columns} />
