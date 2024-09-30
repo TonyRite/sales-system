@@ -38,16 +38,14 @@ export const columns: ColumnDef<loan>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'expand',
+    accessorKey: 'customerName',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => {
       // Get the expand data for the current row
       const expandData = row.getValue('expand');
-      console.log(expandData); // Log the expand data
       const Name = expandData?.CustomerId?.Name || 'N/A'; // Safely access the PhoneNumber
-  
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
@@ -56,6 +54,14 @@ export const columns: ColumnDef<loan>[] = [
         </div>
       );
     },
+    filterFn: (row, columnId, filterValue) => {
+      // Access the expanded data (nested)
+      const expandData = row.original.expand;  // Access `row.original` for raw data
+      const Name = expandData?.CustomerId?.Name || '';
+      
+      // Perform case-insensitive filtering
+      return Name.toLowerCase().includes(filterValue.toLowerCase());
+    }
   },
   {
     accessorKey: 'expand',
