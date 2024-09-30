@@ -1,4 +1,4 @@
-import { optional, z } from 'zod'
+import { z } from 'zod'
 
 // We're keeping a simple non-relational schema here.
 export const salesSchema = z.object({

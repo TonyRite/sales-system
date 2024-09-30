@@ -106,10 +106,10 @@ export function EditDialog({ isOpen, onOpenChange, expenses }: EditDialogProps) 
               <div className='col-span-3'>
                 <Input
                   id='Date_Incurred'
-                  type='date'
                   {...register('Date_Incurred')}
                   placeholder='YYYY-MM-DD'
                   className='col-span-3'
+                  readOnly 
                 />
                 {errors.Date_Incurred && <p className='text-red-600 mt-1 text-sm'>{errors.Date_Incurred.message}</p>}
               </div>
