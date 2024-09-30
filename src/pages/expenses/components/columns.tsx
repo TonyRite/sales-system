@@ -34,11 +34,11 @@ export const columns: ColumnDef<Expense>[] = [
   //   enableHiding: false,
   // },
   {
-    accessorKey: 'id',
+    accessorKey: 'Cid',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='ID' />
     ),
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('Cid')}</div>,
     enableSorting: false,
     enableHiding: false,
   },

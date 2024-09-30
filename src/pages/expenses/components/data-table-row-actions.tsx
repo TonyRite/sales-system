@@ -1,23 +1,18 @@
+import { useState } from 'react'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { Row } from '@tanstack/react-table'
-
 import { Button } from '@/components/custom/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-
-import { labels } from '../data/data'
 import { expenseSchema } from '../data/schema'
+import { EditDialog } from '../EditDialog'
+
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -28,40 +23,52 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const expenses = expenseSchema.parse(row.original)
 
+  // State for managing the edit dialog
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  // Handle opening the dialog
+  const handleEditClick = () => {
+    setIsEditDialogOpen(true);
+  };
+
+  // Close the dialog and reload the page
+  const handleCloseDialog = () => {
+    setIsEditDialogOpen(false);
+    window.location.reload(); // Reload the page
+  };
+
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
-        >
-          <DotsHorizontalIcon className='h-4 w-4' />
-          <span className='sr-only'>Open menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {/* <DropdownMenuRadioGroup value={expenses.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup> */}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant='ghost'
+            className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+          >
+            <DotsHorizontalIcon className='h-4 w-4' />
+            <span className='sr-only'>Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='end' className='w-[160px]'>
+          {/* Edit Option - triggers the dialog */}
+          <DropdownMenuItem onClick={handleEditClick}>
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            Delete
+            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Edit Dialog */}
+      <EditDialog
+        isOpen={isEditDialogOpen}
+        onOpenChange={handleCloseDialog} // Use the handleCloseDialog to close and reload
+        expenses={expenses}  // Pass the selected row's data to the dialog
+      />
+    </>
   )
 }

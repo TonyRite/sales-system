@@ -12,7 +12,8 @@ export interface ExpenseRecord {
   Name: string;              // Name of the expense item
   Price: number;             // Price of the expense
   Quantity: number;          // Quantity of the expense
-  id: number;                // Unique identifier for the expense record
+  Cid: number; 
+  id:string;               // Unique identifier for the expense record
 }
 
 export default function Tasks() {
@@ -23,7 +24,8 @@ export default function Tasks() {
     pb.autoCancellation(false);
     const customers = await pb.collection('Expenses').getList(1, 50, {});
     setExpenses(customers.items.map((item, index) => ({
-      id: index + 1,
+      Cid: index + 1,
+      id:item.id,
       Name: item.Name,
       Price: item.Price,
       Quantity: item.Quantity,
@@ -39,6 +41,7 @@ export default function Tasks() {
   // Transform the customers to match the expected format for DataTable
   const transformedExpense = Expenses.map(Expense => ({
     id: Expense.id,
+    Cid:Expense.Cid,
     Name: Expense.Name,
     Price: Expense.Price,
     Quantity: Expense.Quantity,
