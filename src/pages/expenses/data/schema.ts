@@ -9,13 +9,15 @@ import { z } from 'zod'
 //   label: z.string(),
 //   priority: z.string(),
 // })
-export const taskSchema = z.object({
-  id: z.string(),
-  name:z.string(),
-  phone:z.string(),
-  money:z.string(),
-  Gunia:z.string(),
-  Date_entered:z.string(),
-})
 
-export type Task = z.infer<typeof taskSchema>
+
+export const expenseSchema = z.object({
+  Date_Incurred: z.string(),           // Assuming the date is a string
+  Name: z.string(),                    // The name is a string
+  Price: z.number(),                   // The price is a number
+  Quantity: z.number(),                // The quantity is a number
+  id: z.number(),                      // The ID is a string              // The updated date is a string
+});
+
+export type Expense = z.infer<typeof expenseSchema>
+

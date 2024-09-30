@@ -6,9 +6,9 @@ import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
 import { labels, priorities, statuses } from '../data/data'
-import { Task } from '../data/schema'
+import { Expense } from '../data/schema'
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<Expense>[] = [
   // {
   //   id: 'select',
   //   header: ({ table }) => (
@@ -43,7 +43,7 @@ export const columns: ColumnDef<Task>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'Name',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Name' />
     ),
@@ -51,29 +51,29 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('name')}
+            {row.getValue('Name')}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: 'phone',
+    accessorKey: 'Quantity',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Phone' />
+      <DataTableColumnHeader column={column} title='Quantity' />
     ),
     cell: ({ row }) => {
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('phone')}
+            {row.getValue('Quantity')}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: 'money',
+    accessorKey: 'Price',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Money' />
     ),
@@ -81,29 +81,14 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {`TSH ${row.getValue('money')}`}
+            {`TSH ${row.getValue('Price')}`}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: 'Gunia',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Gunia' />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className='flex space-x-2'>
-          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('Gunia')}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: 'Date_entered',
+    accessorKey: 'Date_Incurred',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Date_entered' />
     ),
@@ -111,7 +96,7 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {(row.getValue('Date_entered') as string).toString().split(' ')[0]}
+            {(row.getValue('Date_Incurred') as string).toString().split(' ')[0]}
           </span>
         </div>
       )

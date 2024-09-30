@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
-import { Task } from '../data/schema'
+import { loan } from '../data/schema'
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<loan>[] = [
   // {
   //   id: 'select',
   //   header: ({ table }) => (
@@ -38,75 +38,84 @@ export const columns: ColumnDef<Task>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'expand',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => {
+      // Get the expand data for the current row
+      const expandData = row.getValue('expand');
+      console.log(expandData); // Log the expand data
+      const Name = expandData?.CustomerId?.Name || 'N/A'; // Safely access the PhoneNumber
+  
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('name')}
+            {Name}
           </span>
         </div>
-      )
+      );
     },
   },
   {
-    accessorKey: 'phone',
+    accessorKey: 'expand',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Phone' />
     ),
     cell: ({ row }) => {
+      // Get the expand data for the current row
+      const expandData = row.getValue('expand');
+      const PhoneNumber = expandData?.CustomerId?.PhoneNumber || 'N/A'; // Safely access the PhoneNumber
+  
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('phone')}
+            {PhoneNumber}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'Amount',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Amount' />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className='flex space-x-2'>
+          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
+             {`TSH ${row.getValue('Amount')}`}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: 'money',
+    accessorKey: 'DateIssued',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Money' />
+      <DataTableColumnHeader column={column} title='DateIssued' />
     ),
     cell: ({ row }) => {
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {`TSH ${row.getValue('money')}`}
+          {(row.getValue('DateIssued') as string).split(' ')[0]}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: 'Gunia',
+    accessorKey: 'DueDate',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Gunia' />
+      <DataTableColumnHeader column={column} title='DueDate' />
     ),
     cell: ({ row }) => {
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('Gunia')}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: 'Date_entered',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Date_entered' />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className='flex space-x-2'>
-          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {(row.getValue('Date_entered') as string).toString().split(' ')[0]}
+          {(row.getValue('DueDate') as string).split(' ')[0]}
           </span>
         </div>
       )

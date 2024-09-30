@@ -1,14 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table'
-
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
+import { sales } from '../data/schema'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
-import { labels, priorities, statuses } from '../data/data'
-import { Task } from '../data/schema'
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<sales>[] = [
   // {
   //   id: 'select',
   //   header: ({ table }) => (
@@ -43,75 +39,45 @@ export const columns: ColumnDef<Task>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'Car_Drive_Names',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Name' />
+      <DataTableColumnHeader column={column} title='Car Name' />
     ),
     cell: ({ row }) => {
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('name')}
+            {row.getValue('Car_Drive_Names')}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: 'phone',
+    accessorKey: 'Quantity',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Phone' />
+      <DataTableColumnHeader column={column} title='Quantity' />
     ),
     cell: ({ row }) => {
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('phone')}
+          {`Dumu ${row.getValue('Quantity')}`}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: 'money',
+    accessorKey: 'Date_Sent',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Money' />
+      <DataTableColumnHeader column={column} title='Date_Transported' />
     ),
     cell: ({ row }) => {
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {`TSH ${row.getValue('money')}`}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: 'Gunia',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Gunia' />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className='flex space-x-2'>
-          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('Gunia')}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: 'Date_entered',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Date_entered' />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className='flex space-x-2'>
-          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {(row.getValue('Date_entered') as string).toString().split(' ')[0]}
+            {(row.getValue('Date_Sent') as string).split(' ')[0]}
           </span>
         </div>
       )

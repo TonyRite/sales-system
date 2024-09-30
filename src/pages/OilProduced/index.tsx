@@ -6,7 +6,15 @@ import { columns } from './components/columns'
 import pb from '@/api/Pocketbase'
 import { useEffect, useState } from 'react'
 
-
+export interface CustomerDetails {
+  Name: string;          // Name of the customer
+  PhoneNumber: string;   // Phone number of the customer
+  collectionId: string;  // ID of the customer's collection
+  collectionName: string; // Name of the customer's collection
+  created: string;       // Creation date of the customer record
+  id: string;            // Unique ID of the customer
+  updated: string;       // Last updated date of the customer record
+}
 export interface CustomerRecordModel {
   CustomerId: string;
   Date: string;
@@ -16,15 +24,7 @@ export interface CustomerRecordModel {
   collectionName: string;
   created: string;
   expand: {
-    CustomerId: {
-      Name: string;
-      PhoneNumber: string;
-      collectionId: string;
-      collectionName: string;
-      created: string;
-      id: string;
-      updated: string;
-    };
+    CustomerId: CustomerDetails
   };
   id: number;
   updated: string;
@@ -32,7 +32,7 @@ export interface CustomerRecordModel {
 
 
 export default function Tasks() {
-
+// remove task ,refactor reuse 
   const [customers, setCustomers] = useState<CustomerRecordModel[]>([]);
 
   const getCustomers = async () => {

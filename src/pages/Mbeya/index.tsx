@@ -16,35 +16,39 @@ export interface RecordModel {
   Date_entered: string,
 }
 
+export interface SalesRecord {
+  Car_Drive_Names: string;   // Name associated with the car drive
+  Date_Sent: string;         // Date when the data was sent
+  Quantity: number;          // Quantity related to the sale
+  id: number;                // Unique identifier for the record
+}
+
+
 export default function Tasks() {
 
-  const [Customers, setCustomers] = useState<RecordModel[]>([]);
+  const [Sales, setSales] = useState<SalesRecord[]>([]);
 
-  const getCustomers = async () => {
+  const getSales = async () => {
     pb.autoCancellation(false);
-    const customers = await pb.collection('deni').getList(1, 50, {});
-    setCustomers(customers.items.map((item) => ({
-      id:item.id,
-      name: item.Name,
-      phone: item.Phone_Number,
-      money: item.Money_Amount,
-      Gunia: item.Gunia,
-      Date_entered: item.Date_entered,
-    })));
+    const customers = await pb.collection('Sales').getList(1, 50, {});
+    setSales(customers.items.map((item, index) => ({
+      id: (index + 1), 
+      Car_Drive_Names: item.Car_Drive_Names,   
+      Date_Sent: item.Date_Sent,               
+      Quantity: item.Quantity,                
+    })));    
   };
 
   useEffect(() => {
-    getCustomers();
+    getSales();
   }, []);
 
   // Transform the customers to match the expected format for DataTable
-  const transformedCustomers = Customers.map(customer => ({
-    id: customer.id, // assuming 'phone' can be used as a unique identifier
-    name: customer.name,
-    phone: customer.phone,
-    money: customer.money.toString(), // Assuming status is related to money
-    Gunia: customer.Gunia.toString(),
-    Date_entered: customer.Date_entered.toString(), // Assuming priority is related to Gunia
+  const transformedCustomers = Sales.map(sale => ({
+    id:sale.id,                            // Unique identifier for the sales record
+    Car_Drive_Names: sale.Car_Drive_Names, // Mapping the car drive names
+    Date_Sent: sale.Date_Sent,             // Mapping the date when the data was sent
+    Quantity: sale.Quantity,                 // Mapping the quantity sold
   }));
 
   return (

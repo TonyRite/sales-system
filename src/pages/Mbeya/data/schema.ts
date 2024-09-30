@@ -18,4 +18,13 @@ export const taskSchema = z.object({
   Date_entered:z.string(),
 })
 
+export const salesSchema = z.object({
+  Car_Drive_Names: z.string(),      // Name of the car drive
+  Date_Sent: z.string(),            // Date when the data was sent
+  Quantity: z.number(),              // Quantity related to the sale
+  id: z.number(),                    // Unique identifier for the record
+
+});
+
 export type Task = z.infer<typeof taskSchema>
+export type sales = z.infer<typeof salesSchema>
