@@ -1,26 +1,9 @@
 import {
-  IconApps,
-  IconBarrierBlock,
-  IconBoxSeam,
-  IconChartHistogram,
+
   IconChecklist,
-  IconComponents,
-  IconError404,
-  IconExclamationCircle,
-  IconHexagonNumber1,
-  IconHexagonNumber2,
-  IconHexagonNumber3,
-  IconHexagonNumber4,
-  IconHexagonNumber5,
+  
   IconLayoutDashboard,
-  IconMessages,
-  IconRouteAltLeft,
-  IconServerOff,
-  IconSettings,
-  IconTruck,
-  IconUserShield,
-  IconUsers,
-  IconLock,
+ 
 } from '@tabler/icons-react'
 
 export interface NavLink {
