@@ -38,7 +38,8 @@ export const loanSchema = z.object({
       updated: z.string(),                           // Last updated date of the customer record
     })
   }),
-  id: z.number(),                                   // Unique identifier for the loan record
+  Cid: z.number(),
+  id:z.string(),                                   // Unique identifier for the loan record
   updated: z.string(),                              // Last updated date of the loan record
 });
 

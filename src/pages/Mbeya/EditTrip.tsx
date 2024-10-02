@@ -1,11 +1,18 @@
+"use client";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/custom/button';
-import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
+import { Input } from '@/components/ui/input'; // Keep this import if you still need other inputs
+import { useForm, Controller } from 'react-hook-form'; // Use Controller for date picker
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import pb from '@/api/Pocketbase';
 import { salesSchema } from './data/schema';
+import { toast } from '@/components/ui/use-toast';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";  // Ensure you have this import
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 // Define the type for the form data using the schema
 type SalesFormSchema = z.infer<typeof salesSchema>;
@@ -17,12 +24,12 @@ interface EditDialogProps {
 }
 
 export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
-
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<SalesFormSchema>({
     resolver: zodResolver(salesSchema),
     defaultValues: {
@@ -41,9 +48,19 @@ export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
         onOpenChange(false);
         window.location.reload(); // Reload the page
       } else {
+        toast({
+          title: "Tatizo",
+          description: `Kuna tatizo la kiufundi`,
+          variant: "destructive",
+        });
         console.error('Error: Cid is undefined');
       }
     } catch (error) {
+      toast({
+        title: "Tatizo",
+        description: `Kuna tatizo la kiufundi`,
+        variant: "destructive",
+      });
       console.error('Error updating expense record:', error);
     }
   };
@@ -57,7 +74,7 @@ export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='grid gap-4 py-4'>
             <div className='grid grid-cols-4 items-center gap-4'>
-              <label htmlFor='Name' className='text-right'>
+              <label htmlFor='Car_Drive_Names' className='text-right'>
                 Car/driver Name
               </label>
               <div className='col-span-3'>
@@ -85,17 +102,38 @@ export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
                 {errors.Quantity && <p className='text-red-600 mt-1 text-sm'>{errors.Quantity.message}</p>}
               </div>
             </div>
+
             <div className='grid grid-cols-4 items-center gap-4'>
               <label htmlFor='Date_Sent' className='text-right'>
                 Date Sent
               </label>
               <div className='col-span-3'>
-                <Input
-                  id='Date_Sent'
-                  {...register('Date_Sent')}
-                  placeholder='YYYY-MM-DD'
-                  className='col-span-3'
-                  readOnly 
+                <Controller
+                  name="Date_Sent"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={`w-full justify-start text-left font-normal ${!value ? "text-muted-foreground" : ""}`}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {value ? format(new Date(value), "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={value ? new Date(value) : undefined}
+                          onSelect={(date) => {
+                            onChange(date ? format(date, "yyyy-MM-dd") : ""); // Store formatted date
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 />
                 {errors.Date_Sent && <p className='text-red-600 mt-1 text-sm'>{errors.Date_Sent.message}</p>}
               </div>

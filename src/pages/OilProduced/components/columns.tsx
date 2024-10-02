@@ -29,11 +29,11 @@ export const columns: ColumnDef<Customer>[] = [
   //   enableHiding: false,
   // },
   {
-    accessorKey: 'id',
+    accessorKey: 'Cid',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='ID' />
     ),
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('Cid')}</div>,
     enableSorting: false,
     enableHiding: false,
   },
@@ -122,7 +122,7 @@ export const columns: ColumnDef<Customer>[] = [
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            20000
+          {`Tsh ${new Intl.NumberFormat().format((row.getValue('Mafuta') as number) * 7000)}`}
           </span>
         </div>
       )

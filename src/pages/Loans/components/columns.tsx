@@ -29,11 +29,11 @@ export const columns: ColumnDef<loan>[] = [
   //   enableHiding: false,
   // },
   {
-    accessorKey: 'id',
+    accessorKey: 'Cid',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='ID' />
     ),
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('Cid')}</div>,
     enableSorting: false,
     enableHiding: false,
   },
@@ -91,7 +91,7 @@ export const columns: ColumnDef<loan>[] = [
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-             {`TSH ${row.getValue('Amount')}`}
+          {`TSH ${new Intl.NumberFormat().format(row.getValue('Amount'))}`}
           </span>
         </div>
       )
@@ -113,15 +113,15 @@ export const columns: ColumnDef<loan>[] = [
     },
   },
   {
-    accessorKey: 'DueDate',
+    accessorKey: 'Status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='DueDate' />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-          {(row.getValue('DueDate') as string).split(' ')[0]}
+          {(row.getValue('Status'))}
           </span>
         </div>
       )

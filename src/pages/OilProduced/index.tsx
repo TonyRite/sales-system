@@ -5,6 +5,11 @@ import { DataTable } from './components/data-table'
 import { columns } from './components/columns'
 import pb from '@/api/Pocketbase'
 import { useEffect, useState } from 'react'
+import { InputForm } from './KibaigwaForm'
+import { useLocation } from 'react-router-dom'
+import { topNav } from '../dashboard'
+import { TopNav } from '@/components/top-nav'
+import { toast } from '@/components/ui/use-toast'
 
 export interface CustomerDetails {
   Name: string;          // Name of the customer
@@ -26,7 +31,8 @@ export interface CustomerRecordModel {
   expand: {
     CustomerId: CustomerDetails
   };
-  id: number;
+  id: string;
+  Cid:number;
   updated: string;
 }
 
@@ -36,10 +42,12 @@ export default function Tasks() {
   const [customers, setCustomers] = useState<CustomerRecordModel[]>([]);
 
   const getCustomers = async () => {
-    pb.autoCancellation(false);
+    try{
+      pb.autoCancellation(false);
     const customersData = await pb.collection('Stocks').getList(1, 50, {expand:'CustomerId'});
     setCustomers(customersData.items.map((item,index) => ({
-      id: (index + 1),
+      id:item.id,
+      Cid: (index + 1),
       // id:1,
       CustomerId: item.CustomerId,
       Date: item.Date,
@@ -61,70 +69,13 @@ export default function Tasks() {
         }
       }
     })));
-    // setCustomers([{
-    //   CustomerId: 2,
-    //   Date: "2024-09-29 12:00:00.000Z",
-    //   Gunia: 100,
-    //   Mafuta: 110,
-    //   collectionId: "wmnpd1t4re9eu5m",
-    //   collectionName: "Stocks",
-    //   created: "2024-09-29 19:53:09.585Z",
-    //   expand: {
-    //     CustomerId: {
-    //       Name: "Noel Rite",
-    //       PhoneNumber: "0678787888",
-    //       collectionId: "386t850jhas4f8e",
-    //       collectionName: "Customers",
-    //       created: "2024-09-29 19:44:08.928Z",
-    //       id: "z181q9strqg8zsm",
-    //       updated: "2024-09-29 19:44:08.928Z"
-    //     }
-    //   },
-    //   "id": "1",
-    //   "updated": "2024-09-29 19:53:09.585Z"
-    // },{
-    //   CustomerId: 3,
-    //   Date: "2024-09-29 12:00:00.000Z",
-    //   Gunia: 100,
-    //   Mafuta: 110,
-    //   collectionId: "wmnpd1t4re9eu5m",
-    //   collectionName: "Stocks",
-    //   created: "2024-09-29 19:53:09.585Z",
-    //   expand: {
-    //     CustomerId: {
-    //       Name: "Noel Rite",
-    //       PhoneNumber: "0678787888",
-    //       collectionId: "386t850jhas4f8e",
-    //       collectionName: "Customers",
-    //       created: "2024-09-29 19:44:08.928Z",
-    //       id: "z181q9strqg8zsm",
-    //       updated: "2024-09-29 19:44:08.928Z"
-    //     }
-    //   },
-    //   "id": "2",
-    //   "updated": "2024-09-29 19:53:09.585Z"
-    // },{
-    //   CustomerId: 4,
-    //   Date: "2024-09-29 12:00:00.000Z",
-    //   Gunia: 100,
-    //   Mafuta: 110,
-    //   collectionId: "wmnpd1t4re9eu5m",
-    //   collectionName: "Stocks",
-    //   created: "2024-09-29 19:53:09.585Z",
-    //   expand: {
-    //     CustomerId: {
-    //       Name: "Noel Rite",
-    //       PhoneNumber: "0678787888",
-    //       collectionId: "386t850jhas4f8e",
-    //       collectionName: "Customers",
-    //       created: "2024-09-29 19:44:08.928Z",
-    //       id: "z181q9strqg8zsm",
-    //       updated: "2024-09-29 19:44:08.928Z"
-    //     }
-    //   },
-    //   "id": "3",
-    //   "updated": "2024-09-29 19:53:09.585Z"
-    // }]);
+    }catch(e){
+      toast({
+        title: "Tatizo",
+        description:`Kuna tatizo la kiufundi`,
+        variant: "destructive",
+      });
+    }
   };
 
 
@@ -133,13 +84,9 @@ export default function Tasks() {
     console.log('getting data')
   }, []);
 
-  useEffect(() => {
-    console.log(customers);
-    console.log(transformedCustomers)  // This will log the updated customers after state change
-  }, [customers]);
-
         const transformedCustomers = customers.map((customer)  => ({
-          id: customer.id,
+          Cid: customer.Cid,
+          id:customer.id,
           CustomerId: customer.CustomerId,
           Date: customer.Date.toString(),
           Gunia: Number(customer.Gunia),
@@ -161,10 +108,20 @@ export default function Tasks() {
           }
         }));
   
-  return (
-    <Layout>
-      {/* ===== Top Heading ===== */}
-      <Layout.Header sticky>
+
+        const location = useLocation();
+
+        // Update the topNav to set isActive based on the current pathname
+        const updatedNav = topNav.map(link => ({
+          ...link,
+          isActive: location.pathname === link.href ? true : false,
+        }));
+      
+        return (
+          <Layout>
+            {/* ===== Top Heading ===== */}
+            <Layout.Header sticky>
+            <TopNav links={updatedNav} />
         <div className='ml-auto flex items-center space-x-4'>
           <ThemeSwitch />
           <UserNav />
@@ -179,6 +136,7 @@ export default function Tasks() {
               Here&apos;s a list of Sacks received and oil produced.
             </p>
           </div>
+          <InputForm onClose={getCustomers}/>
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
           <DataTable data={transformedCustomers} columns={columns} />

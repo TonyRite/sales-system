@@ -6,6 +6,9 @@ import { columns } from './components/columns';
 import pb from '@/api/Pocketbase';
 import { useEffect, useState } from 'react';
 import { InputForm } from './ExpensesForm';
+import { TopNav } from '@/components/top-nav';
+import { topNav } from '../dashboard';
+import { useLocation } from 'react-router-dom';
 
 export interface ExpenseRecord {
   Date_Incurred: string;     // Date when the expense was incurred
@@ -48,10 +51,19 @@ export default function Tasks() {
     Date_Incurred: Expense.Date_Incurred.toString(),
   }));
 
+  const location = useLocation();
+
+  // Update the topNav to set isActive based on the current pathname
+  const updatedNav = topNav.map(link => ({
+    ...link,
+    isActive: location.pathname === link.href ? true : false,
+  }));
+
   return (
     <Layout>
       {/* ===== Top Heading ===== */}
       <Layout.Header sticky>
+      <TopNav links={updatedNav} />
         <div className='ml-auto flex items-center space-x-4'>
           <ThemeSwitch />
           <UserNav />
@@ -76,3 +88,5 @@ export default function Tasks() {
     </Layout>
   );
 }
+
+

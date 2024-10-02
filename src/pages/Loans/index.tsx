@@ -7,6 +7,11 @@ import { columns } from './components/columns'
 import pb from '@/api/Pocketbase'
 import { useEffect, useState } from 'react'
 import { CustomerDetails } from '../OilProduced'
+import { InputForm } from './LoansForm'
+import { TopNav } from '@/components/top-nav'
+import { topNav } from '../dashboard'
+import { useLocation } from 'react-router-dom'
+import { toast } from '@/components/ui/use-toast'
 export interface RecordModel {
   // Define the properties of the RecordModel type here
   id:string;
@@ -17,7 +22,7 @@ export interface RecordModel {
   Date_entered: string,
 }
 
-interface LoanRecord {
+export interface LoanRecord {
   Amount: number;              // Amount of the loan
   CustomerId: string;          // ID of the customer associated with the loan
   DateIssued: string;          // Date when the loan was issued
@@ -29,7 +34,8 @@ interface LoanRecord {
   expand: {
     CustomerId: CustomerDetails; // Expanded customer details
   };
-  id: number;                  // Unique identifier for the loan record
+  Cid: number;
+  id:string;                  // Unique identifier for the loan record
   updated: string;             // Last updated date of the loan record
 }
 
@@ -38,10 +44,12 @@ export default function Tasks() {
   const [Loans, setLoans] = useState<LoanRecord[]>([]);
 
   const getLoans = async () => {
-    pb.autoCancellation(false);
+    try{
+      pb.autoCancellation(false);
     const customers = await pb.collection('Loans').getList(1, 50, {expand:'CustomerId'});
     setLoans(customers.items.map((item,index) => ({
-      id: (index+1),
+      Cid: (index+1),
+      id:item.id,
       CustomerId: item.CustomerId,                // Assuming you want to keep the CustomerId
       DateIssued: item.DateIssued,                  // Assuming you're getting the DateIssued
       DueDate: item.DueDate,                        // Assuming you're getting the DueDate
@@ -63,8 +71,15 @@ export default function Tasks() {
         }
       }
     })));
-    
+    }catch(e){
+      toast({
+        title: "Tatizo",
+        description:`Kuna tatizo la kiufundi`,
+        variant: "destructive",
+      });
+    }
   };
+
 
   useEffect(() => {
     getLoans();
@@ -72,7 +87,8 @@ export default function Tasks() {
 
   // Transform the customers to match the expected format for DataTable
   const transformedCustomers = Loans.map(loan => ({
-    id: loan.id,                                   // Unique identifier for the loan record
+    Cid: loan.Cid,
+    id:loan.id,                                   // Unique identifier for the loan record
     CustomerId: loan.CustomerId,                   // Customer ID associated with the loan
     DateIssued: loan.DateIssued,                   // Date when the loan was issued
     DueDate: loan.DueDate,                         // Due date for loan repayment
@@ -96,11 +112,19 @@ export default function Tasks() {
   }));
   
 
+  const location = useLocation();
+
+  // Update the topNav to set isActive based on the current pathname
+  const updatedNav = topNav.map(link => ({
+    ...link,
+    isActive: location.pathname === link.href ? true : false,
+  }));
+
   return (
     <Layout>
       {/* ===== Top Heading ===== */}
       <Layout.Header sticky>
-       
+      <TopNav links={updatedNav} />
         <div className='ml-auto flex items-center space-x-4'>
           <ThemeSwitch />
           <UserNav />
@@ -115,6 +139,7 @@ export default function Tasks() {
              Here&apos;s a list of loans you provided
             </p>
           </div>
+          <InputForm onClose={getLoans}/>
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
           <DataTable data={transformedCustomers} columns={columns} />
@@ -123,3 +148,5 @@ export default function Tasks() {
     </Layout>
   )
 }
+
+

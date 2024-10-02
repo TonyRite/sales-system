@@ -6,11 +6,9 @@ export default function SignIn2() {
   return (
     <>
       <div className='container grid h-svh flex-col items-center justify-center bg-primary-foreground lg:max-w-none lg:px-0'>
-      <div className='ml-auto flex items-center space-x-4'>
-          <ThemeSwitch />
-      </div>
         <div className='mx-auto flex w-full flex-col justify-center space-y-2 sm:w-[480px] lg:p-8'>
           <div className='mb-4 flex items-center justify-center'>
+          <ThemeSwitch />
             <svg
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 24 24'

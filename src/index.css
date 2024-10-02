@@ -4,11 +4,11 @@
 
 @layer base {
 
-  :root {
-    /* Custom CSS Variables */
+  /* :root {
+
     --header-height: 4rem;
 
-    /* CSS Variables for light theme */
+    
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -38,10 +38,78 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
-  }
+  } */
 
+   :root {
+    /* --CSS: .bg-gradient { background: var(--gradient) } */
+    --header-height: 4rem;
+    --radius: 0.5rem;
+    --gradient: linear-gradient(to top left,#ec008c,#fc6767);
+
+    --background: -38 65% 3.68%;
+    --foreground: -38 10% 97.3%;
+
+    --muted: -38 52% 13.34%;
+    --muted-foreground: -38 10% 54.6%;
+
+    --popover: -38 45% 5.98%;
+    --popover-foreground: -38 10% 97.3%;
+
+    --card: -38 45% 5.98%;
+    --card-foreground: -38 10% 97.3%;
+
+    --border: -38 52% 13.34%;
+    --input: -38 52% 13.34%;
+
+    --primary: -38 100% 46%;
+    --primary-foreground: -38 10% 4.6000000000000005%;
+
+    --secondary: -38 52% 13.34%;
+    --secondary-foreground: -38 10% 97.3%;
+
+    --accent: -38 52% 13.34%;
+    --accent-foreground: -38 10% 97.3%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: -38 10% 97.3%;
+
+    --ring: -38 100% 46%;
+}
+  /*.dark {
+    --gradient: linear-gradient(to top left,#0052D4,#4364F7,#6FB1FC);
+
+    --background: 230 65% 3.36%;
+    --foreground: 230 10% 97.1%;
+
+    --muted: 230 58% 12.6%;
+    --muted-foreground: 230 10% 54.2%;
+
+    --popover: 230 45% 5.46%;
+    --popover-foreground: 230 10% 97.1%;
+
+    --card: 230 45% 5.46%;
+    --card-foreground: 230 10% 97.1%;
+
+    --border: 230 58% 12.6%;
+    --input: 230 58% 12.6%;
+
+    --primary: 230 100% 42%;
+    --primary-foreground: 230 10% 97.1%;
+
+    --secondary: 230 58% 12.6%;
+    --secondary-foreground: 230 10% 97.1%;
+
+    --accent: 230 58% 12.6%;
+    --accent-foreground: 230 10% 97.1%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 230 10% 97.1%;
+
+    --ring: 230 100% 42%;
+} */
 
    .dark {
+    --header-height: 4rem;
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 

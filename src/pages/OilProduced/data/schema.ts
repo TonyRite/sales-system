@@ -39,7 +39,8 @@ export const customerSchema = z.object({
       updated: z.string(),
     })
   }),
-  id: z.number(),
+  id: z.string().optional(),
+  Cid:z.number().optional(),
   updated: z.string(),
 });
 

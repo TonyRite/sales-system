@@ -10,11 +10,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import pb from '@/api/Pocketbase';
 import { useState } from 'react';
+import { toast } from '@/components/ui/use-toast';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";  // Ensure you have this import
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 // Define Zod schema for form validation
 const expenseSchema = z.object({
@@ -44,6 +49,7 @@ export function InputForm({ onClose }: InputFormProps) {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<ExpenseFormSchema>({
     resolver: zodResolver(expenseSchema),
   });
@@ -67,6 +73,11 @@ export function InputForm({ onClose }: InputFormProps) {
       setIsDialogOpen(false);
       onClose();  // Fetch the updated expenses after form submission
     } catch (error) {
+      toast({
+        title: "Tatizo",
+        description:`Kuna tatizo la kiufundi`,
+        variant: "destructive",
+      });
       console.error('Error creating expense record:', error);
     }
   };
@@ -134,13 +145,43 @@ export function InputForm({ onClose }: InputFormProps) {
               <Label htmlFor="date" className="text-right">
                 Date
               </Label>
-              <div className="col-span-3">
+              {/* <div className="col-span-3">
                 <Input
                   id="date"
                   type='date'
                   {...register('date')}
                   placeholder="format year-month-date | 2024-10-01"
                   className="col-span-3"
+                />
+                {errors.date && <p className="text-red-600 mt-1 text-sm">{errors.date.message}</p>}
+              </div> */}
+              <div className="col-span-3">
+                <Controller
+                  name="date"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={`w-full justify-start text-left font-normal ${!value ? "text-muted-foreground" : ""}`}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {value ? format(new Date(value), "PPP") : <span>Chagua Tarehe</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={value ? new Date(value) : undefined}
+                          onSelect={(date) => {
+                            onChange(date ? format(date, "yyyy-MM-dd") : ""); // Store formatted date
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 />
                 {errors.date && <p className="text-red-600 mt-1 text-sm">{errors.date.message}</p>}
               </div>

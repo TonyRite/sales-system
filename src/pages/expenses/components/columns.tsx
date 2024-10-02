@@ -1,11 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
-
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
-
-import { labels, priorities, statuses } from '../data/data'
 import { Expense } from '../data/schema'
 
 export const columns: ColumnDef<Expense>[] = [
@@ -81,7 +76,7 @@ export const columns: ColumnDef<Expense>[] = [
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {`TSH ${row.getValue('Price')}`}
+          {`TSH ${new Intl.NumberFormat().format(row.getValue('Price'))}`}
           </span>
         </div>
       )

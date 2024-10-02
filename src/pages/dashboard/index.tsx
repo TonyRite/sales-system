@@ -1,31 +1,102 @@
 import { Layout } from '@/components/custom/layout'
-import { Button } from '@/components/custom/button'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-//import { Search } from '@/components/search'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent} from '@/components/ui/tabs'
 import ThemeSwitch from '@/components/theme-switch'
-// import { TopNav } from '@/components/top-nav'
 import { UserNav } from '@/components/user-nav'
-
-import { Overview } from './components/overview'
-import { TableDemo } from './components/tableDemo'
-import { InputForm } from './inputForm'
-import { RecentSales } from './components/recentSales'
-
-
+import { TopNav } from '@/components/top-nav'
+import { useEffect, useState} from 'react'
+import { renderCanvas } from './rendercanvas'
+import { renderCanvasFlower } from './sunFlower'
+import pb from '@/api/Pocketbase'
+import { toast } from '@/components/ui/use-toast'
+import { DatePickerWithRange } from './DatePickerWithRange'
+import { useLocation } from 'react-router-dom'
 export default function Dashboard() {
+  const location = useLocation();
+  const [sums, setSums] = useState({
+    totalAmount: 0,
+    totalGunia: 0,
+    totalMafuta: 0,
+    totalExpense:0
+  });
+  // Update the topNav to set isActive based on the current pathname
+  const updatedNav = topNav.map(link => ({
+    ...link,
+    isActive: location.pathname === link.href ? true : false,
+  }));
+      const getLoans = async (filterDates: { startDate: any; endDate: any } | undefined) => {
+        try {
+          pb.autoCancellation(false);
+          // Set up the filter string based on the input
+          let loanFilter = '';
+          if (filterDates && filterDates.startDate && filterDates.endDate) {
+            loanFilter = `created >= '${filterDates.startDate}' && created <= '${filterDates.endDate}'`;
+          }
+    
+          // Fetch loans data with optional date filters
+          let loanData = await pb.collection('Loans').getFullList({
+            filter: loanFilter
+          });
+          const sumOfAmounts = loanData.reduce((sum, item) => sum + item.Amount, 0);
+    
+          // Fetch stocks data
+          let stocksData = await pb.collection('Stocks').getFullList({ filter: loanFilter});
+          const guniaSum = stocksData.reduce((sum, item) => sum + item.Gunia, 0);
+          const mafutaSum = stocksData.reduce((sum, item) => sum + item.Mafuta, 0);
+    
+          // Fetch expenses data
+          let expensesData = await pb.collection('Expenses').getFullList({ filter: loanFilter});
+          const expenseSum = expensesData.reduce((sum, item) => sum + item.Price, 0);
+          console.log(expenseSum);
+    
+          // Update state with the calculated sums
+          setSums({
+            totalAmount: sumOfAmounts,
+            totalGunia: guniaSum,
+            totalMafuta: mafutaSum,
+            totalExpense: expenseSum
+          });
+    
+          toast({
+            title: "Karibu",
+            description: "Mali Bila Daftari huisha bila......",
+            variant: "default"
+          });
+        } catch (e) {
+          toast({
+            title: "Tatizo",
+            description: "Kuna tatizo",
+            variant: "destructive"
+          });
+        }
+      };
+     
+      useEffect(() => {
+       
+          // Initial load logic
+          getLoans(undefined);
+    
+          const randomChoice = Math.floor(Math.random() * 2) + 1;
+          if (randomChoice === 1) {
+            renderCanvas();
+          } else {
+            renderCanvasFlower();
+          }
+    
+      }, []);
+
+
   return (
     <Layout>
       {/* ===== Top Heading ===== */}
       <Layout.Header>
         {/* removed top Nav links since they have no use here ,untill further notice */}
-        {/* <TopNav links={topNav} /> */}
+        <TopNav links={updatedNav} />
         <div className='ml-auto flex items-center space-x-4'>
           {/* <Search /> */}
           <ThemeSwitch />
@@ -36,9 +107,10 @@ export default function Dashboard() {
       {/* ===== Main ===== */}
       <Layout.Body>
         <div className='mb-2 flex items-center justify-between space-y-2'>
-          <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
+        <canvas className="bg-skin-base pointer-events-none absolute inset-0" id="canvas"></canvas>
+          <h1 className='text-3xl font-bold tracking-tight'>Dashboard</h1>
           <div className='flex items-center space-x-2'>
-            <Button>Download</Button>
+          <DatePickerWithRange getLoans={getLoans} />
           </div>
         </div>
         <Tabs
@@ -47,23 +119,17 @@ export default function Dashboard() {
           className='space-y-4'
         >
           <div className='w-full overflow-x-auto pb-2'>
-            <TabsList>
-              <TabsTrigger value='overview'>Overview</TabsTrigger>
-              <TabsTrigger value='customers'>Customers</TabsTrigger>
-              <TabsTrigger value='reports'>Mikopo</TabsTrigger>
-              <TabsTrigger value='store'>Store</TabsTrigger>
-              <TabsTrigger value='notifications'>Notifications</TabsTrigger>
-            </TabsList>
+             <h3 className='text-xl tracking-tight italic'>Taarifa Hizi ni za Tangia kuanza kazi ,lakini unaweza angalia taarifa kwa tarehe hapo pembeni </h3>
           </div>
 
 
           {/* Overview data */}
           <TabsContent value='overview' className='space-y-4'>
-            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-5'>
+            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-2'>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Total Revenue
+                  <CardTitle className='text-lg font-medium'>
+                    Jumla Ya Malipo Ya Ukamuaji
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -79,16 +145,16 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>TSh 45,231,089</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
+                  <div className='text-4xl font-bold md:text-5xl italic lg:text-6xl'>TSh {((sums.totalGunia)*7000).toLocaleString()}</div>
+                  <p className='text-xl font-semibold text-muted-foreground'>
+                    Tsh 7000 kwa Gunia Moja
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Total Loans
+                  <CardTitle className='text-lg font-medium'>
+                    Jumla Ya Mikopo
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -106,15 +172,15 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>+2350</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +180.1% from last month
+                  <div className='text-4xl font-bold md:text-6xl italic'>TSh {sums.totalAmount.toLocaleString()}</div>
+                  <p className='text-xl font-semibold text-muted-foreground'>
+                    Hii ni jumla ya mikopo iliyowahi kutolewa
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>Alizeti Recieved</CardTitle>
+                  <CardTitle className='text-lg font-medium'>Jumla Ya Magunia Yaliyoingia Mashineni</CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -130,16 +196,16 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>+12,234</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +19% from last month
+                  <div className='text-4xl font-bold md:text-6xl'> Gunia: {sums.totalGunia.toLocaleString()}</div>
+                  <p className='text-xl font-semibold text-muted-foreground'>
+                    Magunia yote Tangia Kuanza kwa ukamulishaji
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                   Mafuta Produced
+                  <CardTitle className='text-lg font-medium'>
+                   Jumla Ya Mafuta yaliyotengenezwa
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -155,13 +221,38 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>+573</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +201 since last hour
+                  <div className='text-4xl font-bold md:text-6xl'>Dumu: {sums.totalMafuta.toLocaleString()}</div>
+                  <p className='text-xl font-semibold text-muted-foreground'>
+                    Dumu zilizopatikana toka kuanza kazi
                   </p>
                 </CardContent>
               </Card>
               <Card>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                  <CardTitle className='text-lg font-medium'>
+                   Jumla Ya Gharama za uendeshaji
+                  </CardTitle>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    className='h-4 w-4 text-muted-foreground'
+                  >
+                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
+                  </svg>
+                </CardHeader>
+                <CardContent>
+                  <div className='text-4xl font-bold md:text-6xl '>Tsh {sums.totalExpense.toLocaleString()}</div>
+                  <p className='text-xl font-semibold text-muted-foreground'>
+                    Gharama za uendeshaji
+                  </p>
+                </CardContent>
+              </Card>
+              {/* <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
                    Mashudu Produced
@@ -185,296 +276,7 @@ export default function Dashboard() {
                     +201 since last hour
                   </p>
                 </CardContent>
-              </Card>
-            </div>
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
-              <Card className='col-span-1 lg:col-span-4'>
-                <CardHeader>
-                  <CardTitle>Overview</CardTitle>
-                </CardHeader>
-                <CardContent className='pl-2'>
-                  <Overview />
-                </CardContent>
-              </Card>
-              <Card className='col-span-1 lg:col-span-3'>
-                <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>
-                    You made 265 sales this month.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RecentSales />
-                </CardContent>
-              </Card>
-              <Card className='col-span-1 lg:col-span-7'>
-                <CardHeader>
-                  <CardTitle>Recent Loans</CardTitle>
-                  <CardDescription>
-                    Umetoa Mikopo 20.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RecentSales />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* store section and data */}
-          <TabsContent value='store' className='space-y-4'>
-          <div className='flex items-center space-x-2'>
-            <Button>Download</Button>
-          </div>
-            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-5'>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Jumla ya Thamani ya Mali
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>TSh 45,231,089</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Jumla ya Madumu
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
-                    <circle cx='9' cy='7' r='4' />
-                    <path d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+2350</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +180.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>Alizeti Zilizopimwa</CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <rect width='20' height='14' x='2' y='5' rx='2' />
-                    <path d='M2 10h20' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+12,234</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +19% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                   Alizeti hazijapimwa
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+573</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +201 since last hour
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                   Mashudu Yaliyopo
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+573</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +201 since last hour
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
-
-              <Card className='col-span-1 lg:col-span-3'>
-                <CardHeader>
-                  <CardTitle>Mafuta yaliyopo</CardTitle>
-                  <CardDescription>
-                    Kuna mafuta dumu 240.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RecentSales />
-                </CardContent>
-              </Card>
-              <Card className='col-span-1 lg:col-span-3'>
-                <CardHeader>
-                  <CardTitle>Alizeti Zilizopo</CardTitle>
-                  <CardDescription>
-                    Umetoa Mikopo 20.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RecentSales />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Loans sections */}
-          <TabsContent value='reports' className='space-y-4'>
-          <div className='flex items-center space-x-2'>
-            <Button>Add Loan</Button>
-          </div>
-            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-5'>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Jumla ya Mikopo
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>TSh 8,231,089</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
-              <Card className='col-span-1 lg:col-span-9'>
-                <CardHeader>
-                  <CardTitle>wateja wadaiwa</CardTitle>
-                  <CardDescription>
-                    Kuna wateja 20 wanadaiwa.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {/* <RecentSales /> */}
-                  <TableDemo/>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* customers */}
-          <TabsContent value='customers' className='space-y-4'>
-          <div className='flex items-center space-x-2'>
-            <Button>Add Customer</Button>
-            <InputForm/>
-          </div>
-            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-5'>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Jumla ya Wateja
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>TSh 8,231,089</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
-              <Card className='col-span-1 lg:col-span-9'>
-                <CardHeader>
-                  <CardTitle>wateja</CardTitle>
-                  <CardDescription>
-                    Kuna wateja 20 wanadaiwa.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {/* <RecentSales /> */}
-                  <TableDemo/>
-                </CardContent>
-              </Card>
+              </Card>  */}
             </div>
           </TabsContent>
         </Tabs>
@@ -484,25 +286,30 @@ export default function Dashboard() {
 }
 
 // no use for the data for top nav links at the moment 
-// const topNav = [
-//   {
-//     title: 'Overview',
-//     href: '/',
-//     isActive: true,
-//   },
-//   {
-//     title: 'Customers',
-//     href: 'dashboard/customers',
-//     isActive: false,
-//   },
-//   {
-//     title: 'Products',
-//     href: 'dashboard/products',
-//     isActive: false,
-//   },
-//   {
-//     title: 'Settings',
-//     href: 'dashboard/settings',
-//     isActive: false,
-//   },
-// ]
+export const topNav = [
+  {
+    title: 'Overview',
+    href: '/',
+    
+  },
+  {
+    title: 'Mafuta Kiwandani',
+    href: '/OilProduced',
+   
+  },
+  {
+    title: 'Mafuta Yaliyoenda Mbeya',
+    href: '/Mbeya',
+   
+  },
+  {
+    title: 'Matumizi',
+    href: '/expenses',
+   
+  },
+  {
+    title: 'Mikopo',
+    href: '/Loans',
+    
+  },
+]

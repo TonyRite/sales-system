@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from '@/components/custom/button';
 import {
   Dialog,
@@ -8,24 +10,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";  // Keep this import if you still need other inputs
 import { Label } from "@/components/ui/label";
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import pb from '@/api/Pocketbase';
 import { useState } from 'react';
+import { toast } from '@/components/ui/use-toast';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";  // Ensure you have this import
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 // Define Zod schema for form validation
 const SalesSchema = z.object({
   Car_Drive_Names: z.string().min(1, { message: "Name is required" }),
   Quantity: z
     .number({ invalid_type_error: "Quantity must be a number" })
-    .positive({ message: "Quantity must be a positive number" }),  
+    .positive({ message: "Quantity must be a positive number" }),
   Date_Sent: z.string()
-    .min(1, { message: "Date is required" }) // Ensure the date is not an empty string
+    .min(1, { message: "Date is required" })
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
-      message: "Invalid date format, expected YYYY-MM-DD",  // Custom message for invalid format
+      message: "Invalid date format, expected YYYY-MM-DD",
     }),
 });
 
@@ -41,6 +48,7 @@ export function InputForm({ onClose }: InputFormProps) {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<SalesFormSchema>({
     resolver: zodResolver(SalesSchema),
   });
@@ -56,13 +64,15 @@ export function InputForm({ onClose }: InputFormProps) {
       };
 
       await pb.collection('Sales').create(newTrip);
-
       reset();
-
-      // Close the dialog and trigger data fetch
       setIsDialogOpen(false);
-      onClose();  // Fetch the updated expenses after form submission
+      onClose();
     } catch (error) {
+      toast({
+        title: "Tatizo",
+        description: `Kuna tatizo la kiufundi`,
+        variant: "destructive",
+      });
       console.error('Error creating expense record:', error);
     }
   };
@@ -85,7 +95,7 @@ export function InputForm({ onClose }: InputFormProps) {
               <Label htmlFor="name" className="text-right">
                 Car/driver Name
               </Label>
-              <div className="col-span-3"> 
+              <div className="col-span-3">
                 <Input
                   id="name"
                   {...register('Car_Drive_Names')}
@@ -116,12 +126,32 @@ export function InputForm({ onClose }: InputFormProps) {
                 Date
               </Label>
               <div className="col-span-3">
-                <Input
-                  id="date"
-                  type='date'
-                  {...register('Date_Sent')}
-                  placeholder="format year-month-date | 2024-10-01"
-                  className="col-span-3"
+                <Controller
+                  name="Date_Sent"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={`w-full justify-start text-left font-normal ${!value ? "text-muted-foreground" : ""}`}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {value ? format(new Date(value), "PPP") : <span>Chagua Tarehe</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={value ? new Date(value) : undefined}
+                          onSelect={(date) => {
+                            onChange(date ? format(date, "yyyy-MM-dd") : ""); // Store formatted date
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 />
                 {errors.Date_Sent && <p className="text-red-600 mt-1 text-sm">{errors.Date_Sent.message}</p>}
               </div>

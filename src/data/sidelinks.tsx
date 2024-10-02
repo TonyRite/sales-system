@@ -77,12 +77,12 @@ export const sidelinks: SideLink[] = [
     href: '/Mbeya',
     icon: <IconChecklist size={18} />,
   },
-  {
-    title: 'Settings',
-    label: '',
-    href: '/settings',
-    icon: <IconSettings size={18} />,
-  },
+  // {
+  //   title: 'Settings',
+  //   label: '',
+  //   href: '/settings',
+  //   icon: <IconSettings size={18} />,
+  // },
   // {
   //   title: 'Chats',
   //   label: '9',

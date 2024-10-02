@@ -7,6 +7,10 @@ import { columns } from './components/columns'
 import pb from '@/api/Pocketbase'
 import { useEffect, useState } from 'react'
 import { InputForm } from './MbeyaForm'
+import { TopNav } from '@/components/top-nav'
+import { topNav } from '../dashboard'
+import { useLocation } from 'react-router-dom'
+import { toast } from '@/components/ui/use-toast'
 
 export interface SalesRecord {
   Car_Drive_Names: string;   // Name associated with the car drive
@@ -22,6 +26,7 @@ export default function Tasks() {
   const [Sales, setSales] = useState<SalesRecord[]>([]);
 
   const getSales = async () => {
+   try{
     pb.autoCancellation(false);
     const customers = await pb.collection('Sales').getList(1, 50, {});
     setSales(customers.items.map((item, index) => ({
@@ -31,6 +36,13 @@ export default function Tasks() {
       Date_Sent: item.Date_Sent,               
       Quantity: item.Quantity,                
     })));    
+   }catch(e){
+    toast({
+      title: "Tatizo",
+      description:`Kuna tatizo la kiufundi`,
+      variant: "destructive",
+    });
+   }
   };
 
   useEffect(() => {
@@ -46,10 +58,19 @@ export default function Tasks() {
     Quantity: sale.Quantity,                 // Mapping the quantity sold
   }));
 
+  const location = useLocation();
+
+  // Update the topNav to set isActive based on the current pathname
+  const updatedNav = topNav.map(link => ({
+    ...link,
+    isActive: location.pathname === link.href ? true : false,
+  }));
+
   return (
     <Layout>
       {/* ===== Top Heading ===== */}
       <Layout.Header sticky>
+      <TopNav links={updatedNav} />
         <div className='ml-auto flex items-center space-x-4'>
           <ThemeSwitch />
           <UserNav />
@@ -73,3 +94,4 @@ export default function Tasks() {
     </Layout>
   )
 }
+
