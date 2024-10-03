@@ -11,6 +11,7 @@ import { TopNav } from '@/components/top-nav'
 import { topNav } from '../dashboard'
 import { useLocation } from 'react-router-dom'
 import { toast } from '@/components/ui/use-toast'
+import Loader from '@/components/loader'
 
 export interface SalesRecord {
   Car_Drive_Names: string;   // Name associated with the car drive
@@ -22,11 +23,12 @@ export interface SalesRecord {
 
 
 export default function Tasks() {
-
+  const [loading, setLoading] = useState(true);
   const [Sales, setSales] = useState<SalesRecord[]>([]);
 
   const getSales = async () => {
    try{
+    setLoading(true);
     pb.autoCancellation(false);
     const customers = await pb.collection('Sales').getList(1, 50, {});
     setSales(customers.items.map((item, index) => ({
@@ -35,8 +37,10 @@ export default function Tasks() {
       Car_Drive_Names: item.Car_Drive_Names,   
       Date_Sent: item.Date_Sent,               
       Quantity: item.Quantity,                
-    })));    
+    }))); 
+    setLoading(false);   
    }catch(e){
+    setLoading(false);
     toast({
       title: "Tatizo",
       description:`Kuna tatizo la kiufundi`,
@@ -88,7 +92,10 @@ export default function Tasks() {
           <InputForm onClose={getSales} />
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        {loading?
+          <Loader/>:
           <DataTable data={transformedCustomers} columns={columns} />
+          }
         </div>
       </Layout.Body>
     </Layout>

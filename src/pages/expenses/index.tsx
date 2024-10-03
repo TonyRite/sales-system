@@ -9,6 +9,8 @@ import { InputForm } from './ExpensesForm';
 import { TopNav } from '@/components/top-nav';
 import { topNav } from '../dashboard';
 import { useLocation } from 'react-router-dom';
+import Loader from '@/components/loader';
+import { toast } from '@/components/ui/use-toast';
 
 export interface ExpenseRecord {
   Date_Incurred: string;     // Date when the expense was incurred
@@ -21,19 +23,30 @@ export interface ExpenseRecord {
 
 export default function Tasks() {
   const [Expenses, setExpenses] = useState<ExpenseRecord[]>([]);
-
+  const [loading, setLoading] = useState(true);
   // Fetch expenses from the API
   const getExpenses = async () => {
-    pb.autoCancellation(false);
-    const customers = await pb.collection('Expenses').getList(1, 50, {});
-    setExpenses(customers.items.map((item, index) => ({
-      Cid: index + 1,
-      id:item.id,
-      Name: item.Name,
-      Price: item.Price,
-      Quantity: item.Quantity,
-      Date_Incurred: item.Date_Incurred,
-    })));
+    try{
+      setLoading(true);
+      pb.autoCancellation(false);
+      const customers = await pb.collection('Expenses').getList(1, 50, {});
+      setExpenses(customers.items.map((item, index) => ({
+        Cid: index + 1,
+        id:item.id,
+        Name: item.Name,
+        Price: item.Price,
+        Quantity: item.Quantity,
+        Date_Incurred: item.Date_Incurred,
+      })));
+      setLoading(false);
+    }catch(e){
+      setLoading(false);
+      toast({
+        title: "Tatizo",
+        description:`Kuna tatizo la kiufundi`,
+        variant: "destructive",
+      });
+    }
   };
 
   // Fetch data on component mount
@@ -82,7 +95,10 @@ export default function Tasks() {
           <InputForm onClose={getExpenses} />
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        {loading?
+          <Loader/>:
           <DataTable data={transformedExpense} columns={columns} />
+          }
         </div>
       </Layout.Body>
     </Layout>
