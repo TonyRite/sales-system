@@ -153,19 +153,19 @@ export const renderCanvas = function () {
     }
   }
 
-  function bindMouseMove(event) {
+  function bindMouseMove(event:any) {
     function drawLine() {
       lines = []
       for (let i = 0; i < E.trails; i++)
         lines.push(new Line({ spring: 0.45 + (i / E.trails) * 0.025 }, pos))
     }
-    function move(e) {
+    function move(e:any) {
       e.touches
         ? ((pos.x = e.touches[0].pageX), (pos.y = e.touches[0].pageY))
         : ((pos.x = e.clientX), (pos.y = e.clientY)),
         e.preventDefault()
     }
-    function start(e) {
+    function start(e:any) {
       1 == e.touches.length && ((pos.x = e.touches[0].pageX), (pos.y = e.touches[0].pageY))
     }
     document.removeEventListener('mousemove', bindMouseMove)

@@ -3,31 +3,13 @@ import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 import { Customer } from '../data/schema'
 
+export type ExpandData = {
+  CustomerId?: {
+    Name?: string;
+    PhoneNumber:String
+  };
+};
 export const columns: ColumnDef<Customer>[] = [
-  // {
-  //   id: 'select',
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && 'indeterminate')
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label='Select all'
-  //       className='translate-y-[2px]'
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label='Select row'
-  //       className='translate-y-[2px]'
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: 'Cid',
     header: ({ column }) => (
@@ -44,7 +26,7 @@ export const columns: ColumnDef<Customer>[] = [
     ),
     cell: ({ row }) => {
       // Get the expand data for the current row
-      const expandData = row.getValue('expand');
+      const expandData: ExpandData = row.getValue('expand');
       const Name = expandData?.CustomerId?.Name || 'N/A'; // Safely access the Name
   
       return (
@@ -55,7 +37,7 @@ export const columns: ColumnDef<Customer>[] = [
         </div>
       );
     },
-    filterFn: (row, columnId, filterValue) => {
+    filterFn: (row, filterValue) => {
       // Access the expanded data (nested)
       const expandData = row.original.expand;  // Access `row.original` for raw data
       const Name = expandData?.CustomerId?.Name || '';
@@ -71,7 +53,7 @@ export const columns: ColumnDef<Customer>[] = [
     ),
     cell: ({ row }) => {
       // Get the expand data for the current row
-      const expandData = row.getValue('expand');
+      const expandData: ExpandData = row.getValue('expand');
       const phoneNumber = expandData?.CustomerId?.PhoneNumber || 'N/A'; // Safely access the PhoneNumber
   
       return (

@@ -2,7 +2,7 @@
 // @ts-ignore
 import pb from '@/api/Pocketbase';
 import AppShell from '@/components/app-shell';
-import { Navigate, Outlet } from 'react-router-dom';
+import {  Outlet } from 'react-router-dom';
 import SignIn2 from './sign-in-2';
 
 export function ProtectedRoute() {
