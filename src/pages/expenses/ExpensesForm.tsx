@@ -177,7 +177,7 @@ export function InputForm({ onClose }: InputFormProps) {
                           onSelect={(date) => {
                             onChange(date ? format(date, "yyyy-MM-dd") : ""); // Store formatted date
                           }}
-                          initialFocus
+                         
                         />
                       </PopoverContent>
                     </Popover>

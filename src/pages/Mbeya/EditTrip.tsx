@@ -129,7 +129,6 @@ export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
                           onSelect={(date) => {
                             onChange(date ? format(date, "yyyy-MM-dd") : ""); // Store formatted date
                           }}
-                          initialFocus
                         />
                       </PopoverContent>
                     </Popover>

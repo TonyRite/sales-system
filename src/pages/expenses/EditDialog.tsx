@@ -141,7 +141,7 @@ export function EditDialog({ isOpen, onOpenChange, expenses }: EditDialogProps) 
                           onSelect={(date) => {
                             onChange(date ? format(date, "yyyy-MM-dd") : ""); // Store formatted date
                           }}
-                          initialFocus
+                          
                         />
                       </PopoverContent>
                     </Popover>
