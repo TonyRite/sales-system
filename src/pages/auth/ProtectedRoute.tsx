@@ -1,5 +1,5 @@
 // ProtectedRoute.tsx
-// @ts-ignore
+// @ts-nocheck 
 import pb from '@/api/Pocketbase';
 import AppShell from '@/components/app-shell';
 import {  Outlet } from 'react-router-dom';

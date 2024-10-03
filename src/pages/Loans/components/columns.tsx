@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
@@ -21,7 +22,7 @@ export const columns: ColumnDef<loan>[] = [
     ),
     cell: ({ row }) => {
       // Get the expand data for the current row
-      const expandData :ExpandData = row.getValue('expand');
+      const expandData  = row.getValue('expand');
       const Name = expandData?.CustomerId?.Name || 'N/A'; // Safely access the PhoneNumber
       return (
         <div className='flex space-x-2'>

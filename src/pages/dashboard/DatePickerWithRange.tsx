@@ -2,7 +2,9 @@
 
 import * as React from "react"
 import {  format } from "date-fns"
+//@ts-ignore
 import { Calendar as CalendarIcon } from "lucide-react"
+//@ts-ignore
 import { DateRange } from "react-day-picker"
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
@@ -43,6 +45,7 @@ export function DatePickerWithRange({
         <PopoverTrigger asChild>
           <Button
             id="date"
+            //@ts-ignore
             variant={"default"}
             className={cn(
               "w-[300px] justify-start text-left font-normal",

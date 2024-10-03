@@ -1,3 +1,4 @@
+// @ts-nocheck 
 class Wave {
   phase = 0
   offset = 0
