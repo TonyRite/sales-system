@@ -16,8 +16,6 @@ import pb from '@/api/Pocketbase'
 import { toast } from '@/components/ui/use-toast'
 import { DatePickerWithRange } from './DatePickerWithRange'
 import { useLocation } from 'react-router-dom'
-import { set } from 'date-fns'
-import Loader from '@/components/loader'
 import { Skeleton } from '@/components/ui/skeleton'
 export default function Dashboard() {
   const location = useLocation();
