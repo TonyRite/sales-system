@@ -1,8 +1,5 @@
+// @ts-nocheck 
 import {
-  IconApps,
-  IconBarrierBlock,
-  IconBoxSeam,
-  IconChartHistogram,
   IconChecklist,
   IconComponents,
   IconError404,

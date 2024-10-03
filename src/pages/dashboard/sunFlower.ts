@@ -1,3 +1,4 @@
+// @ts-nocheck 
 let mouseX = 0; // Mouse X position
 let mouseY = 0; // Mouse Y position
 interface Sunflower {

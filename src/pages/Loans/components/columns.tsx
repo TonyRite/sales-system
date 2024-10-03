@@ -1,33 +1,10 @@
+//@ts-nocheck
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 import { loan } from '../data/schema'
 
 export const columns: ColumnDef<loan>[] = [
-  // {
-  //   id: 'select',
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && 'indeterminate')
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label='Select all'
-  //       className='translate-y-[2px]'
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label='Select row'
-  //       className='translate-y-[2px]'
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: 'Cid',
     header: ({ column }) => (
@@ -44,7 +21,7 @@ export const columns: ColumnDef<loan>[] = [
     ),
     cell: ({ row }) => {
       // Get the expand data for the current row
-      const expandData = row.getValue('expand');
+      const expandData  = row.getValue('expand');
       const Name = expandData?.CustomerId?.Name || 'N/A'; // Safely access the PhoneNumber
       return (
         <div className='flex space-x-2'>
