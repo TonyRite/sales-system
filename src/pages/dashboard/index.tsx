@@ -16,8 +16,12 @@ import pb from '@/api/Pocketbase'
 import { toast } from '@/components/ui/use-toast'
 import { DatePickerWithRange } from './DatePickerWithRange'
 import { useLocation } from 'react-router-dom'
+import { set } from 'date-fns'
+import Loader from '@/components/loader'
+import { Skeleton } from '@/components/ui/skeleton'
 export default function Dashboard() {
   const location = useLocation();
+  const [loading ,setLoading] = useState(false);
   const [sums, setSums] = useState({
     totalAmount: 0,
     totalGunia: 0,
@@ -31,6 +35,7 @@ export default function Dashboard() {
   }));
       const getLoans = async (filterDates: { startDate: any; endDate: any } | undefined) => {
         try {
+          setLoading(true);
           pb.autoCancellation(false);
           // Set up the filter string based on the input
           let loanFilter = '';
@@ -67,7 +72,9 @@ export default function Dashboard() {
             description: "Mali Bila Daftari huisha bila......",
             variant: "default"
           });
+          setLoading(false);
         } catch (e) {
+          setLoading(true);
           toast({
             title: "Tatizo",
             description: "Kuna tatizo",
@@ -126,6 +133,16 @@ export default function Dashboard() {
           {/* Overview data */}
           <TabsContent value='overview' className='space-y-4'>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-2'>
+              {loading?
+              <Card>
+              {/* <div className="flex flex-col space-y-5"> */}
+              <div className='flex flex-col space-y-2 h-full w-full justify-center items-start p-2'>
+              <Skeleton className="h-5 w-[200px] rounded-xl" />
+              <Skeleton className="h-5 w-[350px] rounded-xl" />
+              <Skeleton className="h-5 w-[450px] rounded-xl" />
+              </div>
+               {/* </div> */}
+            </Card>:
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-lg font-medium'>
@@ -145,13 +162,26 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-4xl font-bold md:text-5xl italic lg:text-6xl'>TSh {((sums.totalGunia)*7000).toLocaleString()}</div>
+                   <div className='text-4xl font-bold md:text-5xl italic lg:text-6xl'>TSh {((sums.totalGunia)*7000).toLocaleString()}</div>
                   <p className='text-xl font-semibold text-muted-foreground'>
                     Tsh 7000 kwa Gunia Moja
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              
+              }
+              {loading? 
+               <Card>
+              {/* <div className="flex flex-col space-y-5"> */}
+              <div className='flex flex-col space-y-2 h-full w-full justify-center items-start p-2'>
+              <Skeleton className="h-5 w-[200px] rounded-xl" />
+              <Skeleton className="h-5 w-[350px] rounded-xl" />
+              <Skeleton className="h-5 w-[450px] rounded-xl" />
+              </div>
+               {/* </div> */}
+            </Card>
+            :
+            <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-lg font-medium'>
                     Jumla Ya Mikopo
@@ -177,8 +207,16 @@ export default function Dashboard() {
                     Hii ni jumla ya mikopo iliyowahi kutolewa
                   </p>
                 </CardContent>
-              </Card>
-              <Card>
+            </Card>}
+              {loading?<Card>
+              {/* <div className="flex flex-col space-y-5"> */}
+              <div className='flex flex-col space-y-2 h-full w-full justify-center items-start p-2'>
+              <Skeleton className="h-5 w-[200px] rounded-xl" />
+              <Skeleton className="h-5 w-[350px] rounded-xl" />
+              <Skeleton className="h-5 w-[450px] rounded-xl" />
+              </div>
+               {/* </div> */}
+            </Card>:<Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-lg font-medium'>Jumla Ya Magunia Yaliyoingia Mashineni</CardTitle>
                   <svg
@@ -202,7 +240,19 @@ export default function Dashboard() {
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              }
+              {
+                loading?
+                <Card>
+                {/* <div className="flex flex-col space-y-5"> */}
+                <div className='flex flex-col space-y-2 h-full w-full justify-center items-start p-2'>
+                <Skeleton className="h-5 w-[200px] rounded-xl" />
+                <Skeleton className="h-5 w-[350px] rounded-xl" />
+                <Skeleton className="h-5 w-[450px] rounded-xl" />
+                </div>
+                 {/* </div> */}
+              </Card>:
+                <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-lg font-medium'>
                    Jumla Ya Mafuta yaliyotengenezwa
@@ -227,56 +277,43 @@ export default function Dashboard() {
                   </p>
                 </CardContent>
               </Card>
+              } 
+              {loading?
               <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-lg font-medium'>
-                   Jumla Ya Gharama za uendeshaji
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-4xl font-bold md:text-6xl '>Tsh {sums.totalExpense.toLocaleString()}</div>
-                  <p className='text-xl font-semibold text-muted-foreground'>
-                    Gharama za uendeshaji
-                  </p>
-                </CardContent>
-              </Card>
-              {/* <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                   Mashudu Produced
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+573</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +201 since last hour
-                  </p>
-                </CardContent>
-              </Card>  */}
+              {/* <div className="flex flex-col space-y-5"> */}
+              <div className='flex flex-col space-y-2 h-full w-full justify-center items-start p-2'>
+              <Skeleton className="h-5 w-[200px] rounded-xl" />
+              <Skeleton className="h-5 w-[350px] rounded-xl" />
+              <Skeleton className="h-5 w-[450px] rounded-xl" />
+              </div>
+               {/* </div> */}
+            </Card>:
+              <Card>
+              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                <CardTitle className='text-lg font-medium'>
+                 Jumla Ya Gharama za uendeshaji
+                </CardTitle>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  className='h-4 w-4 text-muted-foreground'
+                >
+                  <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div className='text-4xl font-bold md:text-6xl '>Tsh {sums.totalExpense.toLocaleString()}</div>
+                <p className='text-xl font-semibold text-muted-foreground'>
+                  Gharama za uendeshaji
+                </p>
+              </CardContent>
+            </Card>
+            }            
             </div>
           </TabsContent>
         </Tabs>
