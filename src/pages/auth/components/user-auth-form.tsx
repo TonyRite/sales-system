@@ -16,6 +16,7 @@ import { Button } from '@/components/custom/button'
 import { PasswordInput } from '@/components/custom/password-input'
 import { cn } from '@/lib/utils'
 import pb from '@/api/Pocketbase'
+import { toast } from '@/components/ui/use-toast'
 
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
 type AuthRec = {
@@ -58,6 +59,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       console.log(pb.authStore.token)
       authData && authData.token && window.location.reload();
     }catch(e){
+      toast({
+        title: "Kuna Tatizo",
+        description: "Tatizo la mtandao au taarifa zako",
+        variant: "destructive"
+      });
       console.log(e);
     } 
   }
