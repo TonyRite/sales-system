@@ -28,19 +28,28 @@ export default function Tasks() {
 
   const getSales = async () => {
    try{
-    setLoading(true);
     pb.autoCancellation(false);
     const customers = await pb.collection('Sales').getList(1, 50, {});
-    setSales(customers.items.map((item, index) => ({
+   if(customers && customers.items.length > 0){
+    const customerData = customers.items.map((item, index) => ({
       Did: (index + 1), 
       id:item.id,
       Car_Drive_Names: item.Car_Drive_Names,   
       Date_Sent: item.Date_Sent,               
       Quantity: item.Quantity,                
-    }))); 
-    setLoading(false);   
+    }));
+    setSales(customerData); 
+    setLoading(false); 
+   }else{
+      // If no data is retrieved, keep loading active
+      console.warn("No data retrieved, keeping loading active.");
+      toast({
+        title: "Hakuna Taarifa",
+        description: "Hakuna data zilizopatikana, tafadhali jaribu tena baadaye.",
+        variant: "destructive",
+      });
+   }    
    }catch(e){
-    setLoading(false);
     toast({
       title: "Tatizo",
       description:`Kuna tatizo la kiufundi`,

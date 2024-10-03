@@ -45,36 +45,44 @@ export default function Tasks() {
 
   const getCustomers = async () => {
     try{
-      setLoading(true);
-      pb.autoCancellation(false);
-    const customersData = await pb.collection('Stocks').getList(1, 50, {expand:'CustomerId'});
-    setCustomers(customersData.items.map((item,index) => ({
-      id:item.id,
-      Cid: (index + 1),
-      // id:1,
-      CustomerId: item.CustomerId,
-      Date: item.Date,
-      Gunia: item.Gunia,
-      Mafuta: item.Mafuta,
-      collectionId: item.collectionId,
-      collectionName: item.collectionName,
-      created: item.created,
-      updated: item.updated,
-      expand: {
-        CustomerId: {
-          Name: item.expand?.CustomerId?.Name??'',
-          PhoneNumber: item.expand?.CustomerId?.PhoneNumber ?? '',
-          collectionId: item.expand?.CustomerId?.collectionId??'',
-          collectionName: item.expand?.CustomerId?.collectionName??'',
-          created: item.expand?.CustomerId?.created??'',
-          id: item.expand?.CustomerId?.id??'',
-          updated: item.expand?.CustomerId?.updated??'',
+     pb.autoCancellation(false);
+    const customers = await pb.collection('Stocks').getList(1, 50, {expand:'CustomerId'});
+
+    if (customers && customers.items.length > 0){
+      const customerData = customers.items.map((item,index) => ({
+        id:item.id,
+        Cid: (index + 1),
+        // id:1,
+        CustomerId: item.CustomerId,
+        Date: item.Date,
+        Gunia: item.Gunia,
+        Mafuta: item.Mafuta,
+        collectionId: item.collectionId,
+        collectionName: item.collectionName,
+        created: item.created,
+        updated: item.updated,
+        expand: {
+          CustomerId: {
+            Name: item.expand?.CustomerId?.Name??'',
+            PhoneNumber: item.expand?.CustomerId?.PhoneNumber ?? '',
+            collectionId: item.expand?.CustomerId?.collectionId??'',
+            collectionName: item.expand?.CustomerId?.collectionName??'',
+            created: item.expand?.CustomerId?.created??'',
+            id: item.expand?.CustomerId?.id??'',
+            updated: item.expand?.CustomerId?.updated??'',
+          }
         }
-      }
-    })));
+      }));
+    setCustomers(customerData);
     setLoading(false);
+    }else{
+      toast({
+        title: "Tatizo",
+        description:`Kuna tatizo la kiufundi`,
+        variant: "destructive",
+      });
+    }    
     }catch(e){
-      setLoading(false);
       toast({
         title: "Tatizo",
         description:`Kuna tatizo la kiufundi`,

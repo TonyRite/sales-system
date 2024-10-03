@@ -19,7 +19,7 @@ import { useLocation } from 'react-router-dom'
 import { Skeleton } from '@/components/ui/skeleton'
 export default function Dashboard() {
   const location = useLocation();
-  const [loading ,setLoading] = useState(false);
+  const [loading ,setLoading] = useState(true);
   const [sums, setSums] = useState({
     totalAmount: 0,
     totalGunia: 0,
@@ -31,55 +31,69 @@ export default function Dashboard() {
     ...link,
     isActive: location.pathname === link.href ? true : false,
   }));
-      const getLoans = async (filterDates: { startDate: any; endDate: any } | undefined) => {
-        try {
-          setLoading(true);
-          pb.autoCancellation(false);
-          // Set up the filter string based on the input
-          let loanFilter = '';
-          if (filterDates && filterDates.startDate && filterDates.endDate) {
-            loanFilter = `created >= '${filterDates.startDate}' && created <= '${filterDates.endDate}'`;
-          }
-    
-          // Fetch loans data with optional date filters
-          let loanData = await pb.collection('Loans').getFullList({
-            filter: loanFilter
-          });
-          const sumOfAmounts = loanData.reduce((sum, item) => sum + item.Amount, 0);
-    
-          // Fetch stocks data
-          let stocksData = await pb.collection('Stocks').getFullList({ filter: loanFilter});
-          const guniaSum = stocksData.reduce((sum, item) => sum + item.Gunia, 0);
-          const mafutaSum = stocksData.reduce((sum, item) => sum + item.Mafuta, 0);
-    
-          // Fetch expenses data
-          let expensesData = await pb.collection('Expenses').getFullList({ filter: loanFilter});
-          const expenseSum = expensesData.reduce((sum, item) => sum + item.Price, 0);
-          console.log(expenseSum);
-    
-          // Update state with the calculated sums
-          setSums({
-            totalAmount: sumOfAmounts,
-            totalGunia: guniaSum,
-            totalMafuta: mafutaSum,
-            totalExpense: expenseSum
-          });
-    
-          toast({
-            title: "Karibu",
-            description: "Mali Bila Daftari huisha bila......",
-            variant: "default"
-          });
-          setLoading(false);
-        } catch (e) {
-          setLoading(true);
-          toast({
-            title: "Tatizo",
-            description: "Kuna tatizo",
-            variant: "destructive"
-          });
-        }
-      };
+  const getLoans = async (filterDates: { startDate: any; endDate: any } | undefined) => {
+    try {
+      pb.autoCancellation(false);
+  
+      // Set up the filter string based on the input
+      let loanFilter = '';
+      if (filterDates && filterDates.startDate && filterDates.endDate) {
+        loanFilter = `created >= '${filterDates.startDate}' && created <= '${filterDates.endDate}'`;
+      }
+  
+      // Fetch loans data with optional date filters
+      let loanData = await pb.collection('Loans').getFullList({
+        filter: loanFilter
+      });
+      const sumOfAmounts = loanData.length
+        ? loanData.reduce((sum, item) => sum + item.Amount, 0)
+        : 0;
+  
+      // Fetch stocks data
+      let stocksData = await pb.collection('Stocks').getFullList({ filter: loanFilter });
+      const guniaSum = stocksData.length
+        ? stocksData.reduce((sum, item) => sum + item.Gunia, 0)
+        : 0;
+      const mafutaSum = stocksData.length
+        ? stocksData.reduce((sum, item) => sum + item.Mafuta, 0)
+        : 0;
+  
+      // Fetch expenses data
+      let expensesData = await pb.collection('Expenses').getFullList({ filter: loanFilter });
+      const expenseSum = expensesData.length
+        ? expensesData.reduce((sum, item) => sum + item.Price, 0)
+        : 0;
+  
+      console.log(expensesData);
+  
+      // Update state with the calculated sums
+      setSums({
+        totalAmount: sumOfAmounts,
+        totalGunia: guniaSum,
+        totalMafuta: mafutaSum,
+        totalExpense: expenseSum
+      });
+  
+      // Set loading to false only when all data has been successfully fetched
+      setLoading(false);
+  
+      toast({
+        title: "Karibu",
+        description: "Mali Bila Daftari huisha bila......",
+        variant: "default"
+      });
+  
+    } catch (e) {
+      // In case of error, display a toast message and keep the loading state true
+      console.error("Error fetching data: ", e);
+      toast({
+        title: "Tatizo",
+        description: "Kuna tatizo",
+        variant: "destructive"
+      });
+    }
+  };
+      
      
       useEffect(() => {
        

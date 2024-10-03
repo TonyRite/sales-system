@@ -46,36 +46,45 @@ export default function Tasks() {
   const [loading, setLoading] = useState(true);
   const getLoans = async () => {
     try{
-      setLoading(true);
-      pb.autoCancellation(false);
+     pb.autoCancellation(false);
     const customers = await pb.collection('Loans').getList(1, 50, {expand:'CustomerId'});
-    setLoans(customers.items.map((item,index) => ({
-      Cid: (index+1),
-      id:item.id,
-      CustomerId: item.CustomerId,                // Assuming you want to keep the CustomerId
-      DateIssued: item.DateIssued,                  // Assuming you're getting the DateIssued
-      DueDate: item.DueDate,                        // Assuming you're getting the DueDate
-      Amount: item.Amount,                          // The amount of the loan
-      Status: item.Status,                          // The status of the loan
-      collectionId: item.collectionId,              // Collection ID for the loan
-      collectionName: item.collectionName,          // Name of the collection
-      created: item.created,                        // Creation date of the loan record
-      updated: item.updated,                        // Last updated date of the loan record
-      expand: {
-        CustomerId: {
-          Name: item.expand?.CustomerId?.Name ?? '',          // Customer name, default to empty string if not available
-          PhoneNumber: item.expand?.CustomerId?.PhoneNumber ?? '', // Customer phone number, default to empty string if not available
-          collectionId: item.expand?.CustomerId?.collectionId ?? '', // Customer collection ID, default to empty string if not available
-          collectionName: item.expand?.CustomerId?.collectionName ?? '', // Customer collection name, default to empty string if not available
-          created: item.expand?.CustomerId?.created ?? '',                // Customer creation date, default to empty string if not available
-          id: item.expand?.CustomerId?.id ?? '',                          // Customer ID, default to empty string if not available
-          updated: item.expand?.CustomerId?.updated ?? '',                // Customer last updated date, default to empty string if not available
+
+    if(customers && customers.items.length > 0 ){
+      const customerData = customers.items.map((item,index) => ({
+        Cid: (index+1),
+        id:item.id,
+        CustomerId: item.CustomerId,                // Assuming you want to keep the CustomerId
+        DateIssued: item.DateIssued,                  // Assuming you're getting the DateIssued
+        DueDate: item.DueDate,                        // Assuming you're getting the DueDate
+        Amount: item.Amount,                          // The amount of the loan
+        Status: item.Status,                          // The status of the loan
+        collectionId: item.collectionId,              // Collection ID for the loan
+        collectionName: item.collectionName,          // Name of the collection
+        created: item.created,                        // Creation date of the loan record
+        updated: item.updated,                        // Last updated date of the loan record
+        expand: {
+          CustomerId: {
+            Name: item.expand?.CustomerId?.Name ?? '',          // Customer name, default to empty string if not available
+            PhoneNumber: item.expand?.CustomerId?.PhoneNumber ?? '', // Customer phone number, default to empty string if not available
+            collectionId: item.expand?.CustomerId?.collectionId ?? '', // Customer collection ID, default to empty string if not available
+            collectionName: item.expand?.CustomerId?.collectionName ?? '', // Customer collection name, default to empty string if not available
+            created: item.expand?.CustomerId?.created ?? '',                // Customer creation date, default to empty string if not available
+            id: item.expand?.CustomerId?.id ?? '',                          // Customer ID, default to empty string if not available
+            updated: item.expand?.CustomerId?.updated ?? '',                // Customer last updated date, default to empty string if not available
+          }
         }
-      }
-    })));
-    setLoading(false);
-    }catch(e){
+      }))
+      setLoans(customerData);
       setLoading(false);
+    }else{
+      console.warn("No data retrieved, keeping loading active.");
+      toast({
+        title: "Hakuna Taarifa",
+        description: "Hakuna data zilizopatikana, tafadhali jaribu tena baadaye.",
+        variant: "destructive",
+      });
+    } 
+    }catch(e){
       toast({
         title: "Tatizo",
         description:`Kuna tatizo la kiufundi`,

@@ -26,28 +26,49 @@ export default function Tasks() {
   const [loading, setLoading] = useState(true);
   // Fetch expenses from the API
   const getExpenses = async () => {
-    try{
-      setLoading(true);
+    try {
       pb.autoCancellation(false);
+  
+      // Fetch expenses data (page 1, limit 50)
       const customers = await pb.collection('Expenses').getList(1, 50, {});
-      setExpenses(customers.items.map((item, index) => ({
-        Cid: index + 1,
-        id:item.id,
-        Name: item.Name,
-        Price: item.Price,
-        Quantity: item.Quantity,
-        Date_Incurred: item.Date_Incurred,
-      })));
-      setLoading(false);
-    }catch(e){
-      setLoading(false);
+  
+      // Check if data was retrieved
+      if (customers && customers.items.length > 0) {
+        // Map and transform the data into a usable format
+        const expensesData = customers.items.map((item, index) => ({
+          Cid: index + 1,
+          id: item.id,
+          Name: item.Name,
+          Price: item.Price,
+          Quantity: item.Quantity,
+          Date_Incurred: item.Date_Incurred,
+        }));
+  
+        // Update state with the fetched data
+        setExpenses(expensesData);
+  
+        // Stop loading only if data is successfully fetched
+        setLoading(false);
+      } else {
+        // If no data is retrieved, keep loading active
+        console.warn("No data retrieved, keeping loading active.");
+        toast({
+          title: "Hakuna Taarifa",
+          description: "Hakuna data zilizopatikana, tafadhali jaribu tena baadaye.",
+          variant: "destructive",
+        });
+      }
+    } catch (e) {
+      console.error("Error fetching expenses data:", e);
       toast({
         title: "Tatizo",
-        description:`Kuna tatizo la kiufundi`,
+        description: "Kuna tatizo la kiufundi",
         variant: "destructive",
       });
+      // Do not stop loading in case of API failure
     }
   };
+  
 
   // Fetch data on component mount
   useEffect(() => {
