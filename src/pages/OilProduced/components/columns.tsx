@@ -100,6 +100,21 @@ export const columns = (getCustomers: () => void): ColumnDef<Customer>[] => [
     },
   },
   {
+    accessorKey: 'Debe',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Debe' />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className='flex space-x-2'>
+          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
+          {`Debe ${Math.round((row.getValue('Gunia') as number - Math.trunc(row.getValue('Gunia') as number)) * 10)}`}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: 'Mafuta',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Mafuta' />
@@ -123,7 +138,8 @@ export const columns = (getCustomers: () => void): ColumnDef<Customer>[] => [
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-          {`Tsh ${new Intl.NumberFormat().format((row.getValue('Mafuta') as number) * 7000)}`}
+          {/* {`Tsh ${new Intl.NumberFormat().format(Math.trunc(row.getValue('Gunia') as number) * 6000)}`} */}
+          {`Tsh ${new Intl.NumberFormat().format((Math.trunc(row.getValue('Gunia') as number) * 6000) + (Math.round((row.getValue('Gunia') as number - Math.trunc(row.getValue('Gunia') as number)) * 10) * 1000))}`}
           </span>
         </div>
       )
