@@ -30,7 +30,9 @@ const CustomerSchema = z.object({
   Gunia: z
     .number({ invalid_type_error: "Ingiza idadi ya gunia, debe 7 sawa na gunia 1" }),
   Mafuta: z
-    .number({ invalid_type_error: "Weka 0 kama bado hayajakamuliwa" }), 
+    .number({ invalid_type_error: "Weka 0 kama bado hayajakamuliwa" }),
+  Price: z
+  .number({ invalid_type_error: "Ingiza Pesa sahihi" }),
   Date: z.string()
     .min(1, { message: "Date is required" })
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
@@ -74,6 +76,7 @@ export function InputForm({ onClose }: InputFormProps) {
           CustomerId: customerId,
           Gunia: data.Gunia,
           Mafuta: data.Mafuta,
+          Price:data.Price,
           Date: data.Date,
         };
         
@@ -95,6 +98,7 @@ export function InputForm({ onClose }: InputFormProps) {
           CustomerId: InCustomer.id,
           Gunia: data.Gunia,
           Mafuta: data.Mafuta,
+          Price:data.Price,
           Date: data.Date,
         };
         await pb.collection('Stocks').create(newPerson);     
@@ -180,6 +184,21 @@ export function InputForm({ onClose }: InputFormProps) {
                   id="Mafuta"
                   {...register('Mafuta', { valueAsNumber: true })}
                   placeholder="Quantity"
+                  className="w-full"
+                />
+                {errors.Mafuta && <p className="text-red-600 mt-1 text-sm">{errors.Mafuta.message}</p>}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-4 gap-4 items-center">
+              <Label htmlFor="Price" className="text-right">
+                Bei ya Gunia (Rose)
+              </Label>
+              <div className="col-span-3">
+                <Input
+                  id="Price"
+                  {...register('Price', { valueAsNumber: true })}
+                  placeholder="Price"
                   className="w-full"
                 />
                 {errors.Mafuta && <p className="text-red-600 mt-1 text-sm">{errors.Mafuta.message}</p>}

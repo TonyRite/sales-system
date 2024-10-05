@@ -26,6 +26,7 @@ export interface CustomerRecordModel {
   Date: string;
   Gunia: number;
   Mafuta: number;
+  Price: number;
   collectionId: string;
   collectionName: string;
   created: string;
@@ -57,6 +58,7 @@ export default function Tasks() {
         Date: item.Date,
         Gunia: item.Gunia,
         Mafuta: item.Mafuta,
+        Price:item.Price,
         collectionId: item.collectionId,
         collectionName: item.collectionName,
         created: item.created,
@@ -104,6 +106,7 @@ export default function Tasks() {
           Date: customer.Date.toString(),
           Gunia: Number(customer.Gunia),
           Mafuta: Number(customer.Mafuta),
+          Price: Number(customer.Price),
           collectionId: customer.collectionId,
           collectionName: customer.collectionName,
           created: customer.created.toString(),

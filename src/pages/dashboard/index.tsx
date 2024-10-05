@@ -24,7 +24,8 @@ export default function Dashboard() {
     totalAmount: 0,
     totalGunia: 0,
     totalMafuta: 0,
-    totalExpense:0
+    totalExpense:0,
+    totalDebe:0,
   });
   // Update the topNav to set isActive based on the current pathname
   const updatedNav = topNav.map(link => ({
@@ -52,8 +53,11 @@ export default function Dashboard() {
       // Fetch stocks data
       let stocksData = await pb.collection('Stocks').getFullList({ filter: loanFilter });
       const guniaSum = stocksData.length
-        ? stocksData.reduce((sum, item) => sum + item.Gunia, 0)
-        : 0;
+      ? stocksData.reduce((sum, item) => sum + Math.trunc(item.Gunia), 0)
+      : 0;
+      const debeSum = stocksData.length
+      ? stocksData.reduce((sum, item) => sum + (item.Gunia - Math.trunc(item.Gunia)), 0)
+      : 0;
       const mafutaSum = stocksData.length
         ? stocksData.reduce((sum, item) => sum + item.Mafuta, 0)
         : 0;
@@ -71,7 +75,8 @@ export default function Dashboard() {
         totalAmount: sumOfAmounts,
         totalGunia: guniaSum,
         totalMafuta: mafutaSum,
-        totalExpense: expenseSum
+        totalExpense: expenseSum,
+        totalDebe: (debeSum*10),
       });
   
       // Set loading to false only when all data has been successfully fetched
@@ -174,9 +179,9 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                   <div className='text-4xl font-bold md:text-5xl italic lg:text-6xl'>TSh {((sums.totalGunia)*7000).toLocaleString()}</div>
+                   <div className='text-4xl font-bold md:text-5xl italic lg:text-6xl'>TSh {(((sums.totalGunia)*6000)+(sums.totalDebe*1000)).toLocaleString()}</div>
                   <p className='text-xl font-semibold text-muted-foreground'>
-                    Tsh 7000 kwa Gunia Moja
+                    Tsh 6000 kwa Gunia Moja na 1000 kwa debe moja 
                   </p>
                 </CardContent>
               </Card>
@@ -208,9 +213,7 @@ export default function Dashboard() {
                     strokeWidth='2'
                     className='h-4 w-4 text-muted-foreground'
                   >
-                    <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
-                    <circle cx='9' cy='7' r='4' />
-                    <path d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' />
+                    <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -241,19 +244,56 @@ export default function Dashboard() {
                     strokeWidth='2'
                     className='h-4 w-4 text-muted-foreground'
                   >
-                    <rect width='20' height='14' x='2' y='5' rx='2' />
-                    <path d='M2 10h20' />
+                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
                   </svg>
                 </CardHeader>
                 <CardContent>
                   <div className='text-4xl font-bold md:text-6xl'> Gunia: {sums.totalGunia.toLocaleString()}</div>
                   <p className='text-xl font-semibold text-muted-foreground'>
-                    Magunia yote Tangia Kuanza kwa ukamulishaji
+                    Magunia yote kulingana na tarehe
                   </p>
                 </CardContent>
               </Card>
               }
               {
+                loading?
+                <Card>
+                {/* <div className="flex flex-col space-y-5"> */}
+                <div className='flex flex-col space-y-2 h-full w-full justify-center items-start p-2'>
+                <Skeleton className="h-5 w-[200px] rounded-xl" />
+                <Skeleton className="h-5 w-[350px] rounded-xl" />
+                <Skeleton className="h-5 w-[450px] rounded-xl" />
+                </div>
+                 {/* </div> */}
+              </Card>:
+                <Card>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                  <CardTitle className='text-lg font-medium'>
+                   Jumla Ya Madebe
+                  </CardTitle>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    className='h-4 w-4 text-muted-foreground'
+                  >
+                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
+                  </svg>
+                </CardHeader>
+                <CardContent>
+                  <div className='text-4xl font-bold md:text-6xl'>Debe: {sums.totalDebe.toLocaleString()}</div>
+                  <p className='text-xl font-semibold text-muted-foreground'>
+                    Debe zilizopatikana
+                  </p>
+                </CardContent>
+              </Card>
+              } 
+
+{
                 loading?
                 <Card>
                 {/* <div className="flex flex-col space-y-5"> */}
@@ -306,16 +346,16 @@ export default function Dashboard() {
                  Jumla Ya Gharama za uendeshaji
                 </CardTitle>
                 <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  className='h-4 w-4 text-muted-foreground'
-                >
-                  <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    className='h-4 w-4 text-muted-foreground'
+                  >
+                    <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
                 </svg>
               </CardHeader>
               <CardContent>
