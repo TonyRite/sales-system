@@ -28,11 +28,9 @@ const CustomerSchema = z.object({
   CustomerName: z.string().min(1, { message: "Name is required" }),
   PhoneNumber: z.string().min(1, { message: "Phone is required" }), // Change to string to allow better phone number handling
   Gunia: z
-    .number({ invalid_type_error: "Ingiza idadi ya magunia kwa tarakimu" })
-    .positive({ message: "Ingiza idadi ya gunia, debe 7 sawa na gunia 1" }),
+    .number({ invalid_type_error: "Ingiza idadi ya gunia, debe 7 sawa na gunia 1" }),
   Mafuta: z
-    .number({ invalid_type_error: "Ingiza idadi ya madumu kwa tarakimu" })
-    .positive({ message: "Weka 0 kama bado hayajakamuliwa" }),  
+    .number({ invalid_type_error: "Weka 0 kama bado hayajakamuliwa" }), 
   Date: z.string()
     .min(1, { message: "Date is required" })
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
