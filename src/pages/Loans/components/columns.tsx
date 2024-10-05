@@ -4,7 +4,7 @@ import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 import { loan } from '../data/schema'
 
-export const columns: ColumnDef<loan>[] = [
+export const columns = (getCustomers: () => void): ColumnDef<sales>[] => [
   {
     accessorKey: 'Cid',
     header: ({ column }) => (
@@ -106,6 +106,6 @@ export const columns: ColumnDef<loan>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => <DataTableRowActions row={row} getCustomers={getCustomers}/>,
   },
 ]

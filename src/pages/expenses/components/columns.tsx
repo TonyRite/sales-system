@@ -3,7 +3,7 @@ import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 import { Expense } from '../data/schema'
 
-export const columns: ColumnDef<Expense>[] = [
+export const columns = (getCustomers: () => void): ColumnDef<Expense>[] => [
   // {
   //   id: 'select',
   //   header: ({ table }) => (
@@ -99,6 +99,6 @@ export const columns: ColumnDef<Expense>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => <DataTableRowActions row={row} getCustomers={getCustomers}/>,
   },
 ]

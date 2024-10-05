@@ -40,7 +40,7 @@ export function EditStock({ isOpen, onOpenChange, stock }: EditDialogProps) {
         await pb.collection('Stocks').update(stock.id, data);
         reset();
         onOpenChange(false);
-        window.location.reload(); // Reload the page
+        //close 
       } else {
         console.error('Error: Cid is undefined');
         toast({
@@ -75,7 +75,7 @@ export function EditStock({ isOpen, onOpenChange, stock }: EditDialogProps) {
                 <Input
                   id='Name'
                   {...register('expand.CustomerId.Name')}
-                  placeholder='Car_Drive_Names'
+                  placeholder='Name'
                   className='col-span-3'
                   readOnly
                 />
@@ -90,8 +90,8 @@ export function EditStock({ isOpen, onOpenChange, stock }: EditDialogProps) {
               <div className='col-span-3'>
                 <Input
                   id='Gunia'
-                  {...register('Gunia')}
-                  placeholder='Car_Drive_Names'
+                  {...register('Gunia',{valueAsNumber:true})}
+                  placeholder='Gunia'
                   className='col-span-3'
                   readOnly
                 />

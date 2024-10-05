@@ -39,7 +39,7 @@ export function EditLoan({ isOpen, onOpenChange, stock }: EditDialogProps) {
         await pb.collection('Loans').update(stock.id, data);
         reset();
         onOpenChange(false);
-        window.location.reload(); // Reload the page
+       // Reload the page
       } else {
         console.error('Error: ID is undefined');
         toast({

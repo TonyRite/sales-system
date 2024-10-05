@@ -46,7 +46,6 @@ export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
         await pb.collection('Sales').update(sales.id, data);
         reset();
         onOpenChange(false);
-        window.location.reload(); // Reload the page
       } else {
         toast({
           title: "Tatizo",

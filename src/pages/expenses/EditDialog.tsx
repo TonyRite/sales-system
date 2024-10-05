@@ -43,7 +43,6 @@ export function EditDialog({ isOpen, onOpenChange, expenses }: EditDialogProps) 
         console.log(data)
         reset();
         onOpenChange(false)
-        window.location.reload(); // Reload the page
       } else {
         console.error('Error: Cid is undefined')
         toast({

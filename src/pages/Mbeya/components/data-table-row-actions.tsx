@@ -14,11 +14,13 @@ import { salesSchema } from '../data/schema'
 import { EditTrip } from '../EditTrip'
 
 interface DataTableRowActionsProps<TData> {
-  row: Row<TData>
+  row: Row<TData>;
+  getCustomers: () => void; // Add getCustomers here
 }
 
 export function DataTableRowActions<TData>({
   row,
+  getCustomers,
 }: DataTableRowActionsProps<TData>) {
   const trip = salesSchema.parse(row.original)
 
@@ -33,7 +35,7 @@ export function DataTableRowActions<TData>({
   // Close the dialog and reload the page
   const handleCloseDialog = () => {
     setIsEditDialogOpen(false);
-    window.location.reload(); // Reload the page
+    getCustomers();
   };
 
 

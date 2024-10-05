@@ -16,11 +16,13 @@ import { customerSchema } from '../data/schema'
 import { EditStock } from '../EditStock'
 
 interface DataTableRowActionsProps<TData> {
-  row: Row<TData>
+  row: Row<TData>;
+  getCustomers: () => void; // Add getCustomers here
 }
 
 export function DataTableRowActions<TData>({
   row,
+  getCustomers, // Destructure getCustomers
 }: DataTableRowActionsProps<TData>) {
   const cusStock = customerSchema.parse(row.original)
 
@@ -35,7 +37,7 @@ export function DataTableRowActions<TData>({
   // Close the dialog and reload the page
   const handleCloseDialog = () => {
     setIsEditDialogOpen(false);
-    window.location.reload(); // Reload the page
+    getCustomers(); 
   };
 
 
@@ -69,6 +71,7 @@ export function DataTableRowActions<TData>({
         isOpen={isEditDialogOpen}
         onOpenChange={handleCloseDialog} // Use the handleCloseDialog to close and reload
         stock={cusStock}  // Pass the selected row's data to the dialog
+        // close
       />
     </>
   )

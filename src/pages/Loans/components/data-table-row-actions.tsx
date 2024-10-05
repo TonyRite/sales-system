@@ -15,11 +15,13 @@ import { EditLoan } from '../EditLoan'
 
 
 interface DataTableRowActionsProps<TData> {
-  row: Row<TData>
+  row: Row<TData>;
+  getCustomers: () => void;
 }
 
 export function DataTableRowActions<TData>({
   row,
+  getCustomers
 }: DataTableRowActionsProps<TData>) {
   const LoanStock = loanSchema.parse(row.original)
 
@@ -34,7 +36,7 @@ export function DataTableRowActions<TData>({
   // Close the dialog and reload the page
   const handleCloseDialog = () => {
     setIsEditDialogOpen(false);
-    window.location.reload(); // Reload the page
+    getCustomers();
   };
 
 
