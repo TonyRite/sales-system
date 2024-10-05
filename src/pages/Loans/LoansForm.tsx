@@ -28,7 +28,7 @@ const CustomerSchema = z.object({
   .number({ invalid_type_error: "Ingiza namba ya simu sahihi"})
   .min(1, { message: "Rose Phone is required" }),
   Pesa: z
-    .number({ invalid_type_error: "Rose ingiza idadi ya magunia kwa tarakimu" })
+    .number({ invalid_type_error: "Rose Ingiza kiasi kwa usahihi" })
     .positive({ message: "Rose Ingiza kiasi kwa usahihi," }),
   Date: z.string()
     .min(1, { message: "Ingiza tarehe bwana" }) // Ensure the date is not an empty string
