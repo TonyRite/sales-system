@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {  format } from "date-fns"
+import {  addDays, format } from "date-fns"
 //@ts-ignore
 import { Calendar as CalendarIcon } from "lucide-react"
 //@ts-ignore
@@ -24,14 +24,33 @@ export function DatePickerWithRange({
   const [date, setDate] = React.useState<DateRange | undefined>(undefined)
 
   // Format the selected dates into the desired format
+  // const handleDateSelection = (selectedDate: DateRange | undefined) => {
+  //   setDate(selectedDate);
+
+  //   if (selectedDate?.from && selectedDate?.to) {
+  //     const startDate = selectedDate.from.toISOString();
+  //     const endDate = selectedDate.to.toISOString();
+
+  //     // Call the getLoans function with the selected date range
+  //     getLoans({
+  //       startDate: startDate,
+  //       endDate: endDate
+  //     });
+  //   }
+  // };
+
   const handleDateSelection = (selectedDate: DateRange | undefined) => {
     setDate(selectedDate);
-
+  
     if (selectedDate?.from && selectedDate?.to) {
-      const startDate = selectedDate.from.toISOString();
-      const endDate = selectedDate.to.toISOString();
-
-      // Call the getLoans function with the selected date range
+      // Add one day to the end date
+      const adjustedEndDate = addDays(selectedDate.to, 1);
+  
+      // Format the dates
+      const startDate = format(selectedDate.from, "yyyy-MM-dd HH:mm:ss");
+      const endDate = format(adjustedEndDate, "yyyy-MM-dd HH:mm:ss");
+  
+      // Call the getLoans function with the adjusted date range
       getLoans({
         startDate: startDate,
         endDate: endDate

@@ -39,7 +39,8 @@ export default function Dashboard() {
       // Set up the filter string based on the input
       let loanFilter = '';
       if (filterDates && filterDates.startDate && filterDates.endDate) {
-        loanFilter = `created >= '${filterDates.startDate}' && created <= '${filterDates.endDate}'`;
+        loanFilter = `Date >= '${filterDates.startDate}' && Date <= '${filterDates.endDate}'`;
+        // loanFilter = `Date >= '2024-09-29 0:00:00' && Date <= '2024-10-06 00:00:00'`
       }
   
       // Fetch loans data with optional date filters
@@ -55,9 +56,11 @@ export default function Dashboard() {
       const guniaSum = stocksData.length
       ? stocksData.reduce((sum, item) => sum + Math.trunc(item.Gunia), 0)
       : 0;
-      const debeSum = stocksData.length
-      ? stocksData.reduce((sum, item) => sum + (item.Gunia - Math.trunc(item.Gunia)), 0)
-      : 0;
+      const debeSum = stocksData.length 
+        ? parseFloat(
+            stocksData.reduce((sum, item) => sum + (item.Gunia - Math.trunc(item.Gunia)), 0).toFixed(1)
+          )
+        : 0;
       const mafutaSum = stocksData.length
         ? stocksData.reduce((sum, item) => sum + item.Mafuta, 0)
         : 0;
@@ -67,17 +70,20 @@ export default function Dashboard() {
       const expenseSum = expensesData.length
         ? expensesData.reduce((sum, item) => sum + item.Price, 0)
         : 0;
-  
       console.log(expensesData);
   
       // Update state with the calculated sums
       setSums({
         totalAmount: sumOfAmounts,
-        totalGunia: guniaSum,
+        totalGunia: (Math.trunc(((debeSum*10)/7))+(guniaSum)),
         totalMafuta: mafutaSum,
         totalExpense: expenseSum,
-        totalDebe: (debeSum*10),
+        totalDebe: ((debeSum*10)%7),
       });
+      console.log(debeSum*10)
+      console.log(guniaSum)
+      console.log(mafutaSum)
+      //console.log(sums.totalDebe)
   
       // Set loading to false only when all data has been successfully fetched
       setLoading(false);
