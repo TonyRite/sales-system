@@ -87,7 +87,7 @@ export function InputForm({ onClose }: InputFormProps) {
       } else {
         // 4. If not found by name, proceed to create a new one
         const newCustomer = {
-          Name: data.CustomerName,
+          Name: formatName(data.CustomerName),
           PhoneNumber: data.PhoneNumber,
         };
         const InCustomer = await pb.collection('Customers').create(newCustomer);
