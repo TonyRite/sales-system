@@ -54,9 +54,10 @@ export function InputForm({ onClose }: InputFormProps) {
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const [loading , setLoading] = useState(false);
   const onSubmit = async (data: SalesFormSchema) => {
     try {
+      setLoading(true);
       const newTrip = {
         Car_Drive_Names: data.Car_Drive_Names,
         Date_Sent: data.Date_Sent,
@@ -66,8 +67,10 @@ export function InputForm({ onClose }: InputFormProps) {
       await pb.collection('Sales').create(newTrip);
       reset();
       setIsDialogOpen(false);
+      setLoading(false);
       onClose();
     } catch (error) {
+      setLoading(false);
       toast({
         title: "Tatizo",
         description: `Kuna tatizo la kiufundi`,
@@ -158,7 +161,7 @@ export function InputForm({ onClose }: InputFormProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button loading={loading} type="submit">Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

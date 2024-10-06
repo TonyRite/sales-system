@@ -20,7 +20,7 @@ import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";  // Ensure you have this import
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 // Define Zod schema for form validation
@@ -58,12 +58,14 @@ export function InputForm({ onClose }: InputFormProps) {
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: CustomerFormSchema) => {
     const formatName = (name: string) =>
       name.toLowerCase().replace(/\b\w/g, (char: string) => char.toUpperCase());
 
     try {
+      setLoading(true);
       // 1. Find the customer by name
       const findingId = await pb.collection('Customers').getFullList({
         filter: `Name="${formatName(data.CustomerName)}"`,
@@ -84,6 +86,7 @@ export function InputForm({ onClose }: InputFormProps) {
         await pb.collection('Stocks').create(newTrip);     
         reset();
         setIsDialogOpen(false);
+        setLoading(false);
         onClose();  // Fetch the updated expenses after form submission
       } else {
         // 4. If not found by name, proceed to create a new one
@@ -104,9 +107,11 @@ export function InputForm({ onClose }: InputFormProps) {
         await pb.collection('Stocks').create(newPerson);     
         reset();
         setIsDialogOpen(false);
+        setLoading(false);
         onClose();  
       }
     } catch (error) {
+      setLoading(false);
       toast({
         title: "Tatizo",
         description: 'Kuna tatizo la kiufundi',
@@ -251,7 +256,7 @@ export function InputForm({ onClose }: InputFormProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save Changes</Button>
+            <Button loading={loading} type="submit">Save Changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

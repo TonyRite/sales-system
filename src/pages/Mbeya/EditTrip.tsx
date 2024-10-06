@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";  // Ensure you have this import
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
+import { useState } from 'react';
 
 // Define the type for the form data using the schema
 type SalesFormSchema = z.infer<typeof salesSchema>;
@@ -38,15 +39,19 @@ export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
     },
   });
 
+  const [loading, setLoading] = useState(false);
   // Handle form submission
   const onSubmit = async (data: SalesFormSchema) => {
     try {
+      setLoading(true);
       // Update the record in the database
       if (sales.id) {
         await pb.collection('Sales').update(sales.id, data);
         reset();
+        setLoading(false);
         onOpenChange(false);
       } else {
+        setLoading(false);
         toast({
           title: "Tatizo",
           description: `Kuna tatizo la kiufundi`,
@@ -55,6 +60,7 @@ export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
         console.error('Error: Cid is undefined');
       }
     } catch (error) {
+      setLoading(false);
       toast({
         title: "Tatizo",
         description: `Kuna tatizo la kiufundi`,
@@ -139,7 +145,7 @@ export function EditTrip({ isOpen, onOpenChange, sales }: EditDialogProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type='submit'>Save changes</Button>
+            <Button loading={loading} type='submit'>Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

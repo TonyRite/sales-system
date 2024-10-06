@@ -26,7 +26,7 @@ export interface RecordModel {
 export interface LoanRecord {
   Amount: number;              // Amount of the loan
   CustomerId: string;          // ID of the customer associated with the loan
-  DateIssued: string;          // Date when the loan was issued
+  Date: string;          // Date when the loan was issued
   DueDate: string;             // Due date for the loan repayment
   Status: string;              // Status of the loan (e.g., "Not Paid")
   collectionId: string;        // ID of the collection
@@ -54,7 +54,7 @@ export default function Tasks() {
         Cid: (index+1),
         id:item.id,
         CustomerId: item.CustomerId,                // Assuming you want to keep the CustomerId
-        DateIssued: item.DateIssued,                  // Assuming you're getting the DateIssued
+        Date: item.Date,                  // Assuming you're getting the DateIssued
         DueDate: item.DueDate,                        // Assuming you're getting the DueDate
         Amount: item.Amount,                          // The amount of the loan
         Status: item.Status,                          // The status of the loan
@@ -103,7 +103,7 @@ export default function Tasks() {
     Cid: loan.Cid,
     id:loan.id,                                   // Unique identifier for the loan record
     CustomerId: loan.CustomerId,                   // Customer ID associated with the loan
-    DateIssued: loan.DateIssued,                   // Date when the loan was issued
+    DateIssued: loan.Date,                   // Date when the loan was issued
     DueDate: loan.DueDate,                         // Due date for loan repayment
     Amount: loan.Amount,                // Amount of the loan as a string
     Status: loan.Status,                            // Current status of the loan

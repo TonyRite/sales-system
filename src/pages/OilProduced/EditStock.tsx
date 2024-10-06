@@ -7,6 +7,7 @@ import { z } from 'zod';
 import pb from '@/api/Pocketbase';
 import { customerSchema } from './data/schema';
 import { toast } from '@/components/ui/use-toast';
+import { useState } from 'react';
 
 
 // Define the type for the form data using the schema
@@ -31,17 +32,20 @@ export function EditStock({ isOpen, onOpenChange, stock }: EditDialogProps) {
       ...stock
     }
   });
-
+  const [loading, setLoading] = useState(false);
   // Handle form submission
   const onSubmit = async (data: CustomerFormSchema) => {
     try {
+      setLoading(true);
       // Update the record in the database
       if (stock.id) {
         await pb.collection('Stocks').update(stock.id, data);
         reset();
+        setLoading(false);
         onOpenChange(false);
         //close 
       } else {
+        setLoading(false);
         console.error('Error: Cid is undefined');
         toast({
           title: "Tatizo",
@@ -50,6 +54,7 @@ export function EditStock({ isOpen, onOpenChange, stock }: EditDialogProps) {
         });
       }
     } catch (error) {
+      setLoading(false);
       console.error('Error updating expense record:', error);
       toast({
         title: "Tatizo",
@@ -115,7 +120,7 @@ export function EditStock({ isOpen, onOpenChange, stock }: EditDialogProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type='submit'>Save changes</Button>
+            <Button loading={loading} type='submit'>Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

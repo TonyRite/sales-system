@@ -55,14 +55,16 @@ export function InputForm({ onClose }: InputFormProps) {
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading , setLoading] = useState(false);
 
   const onSubmit = async (data: ExpenseFormSchema) => {
     try {
+      setLoading(true);
       const newExpense = {
         Name: data.name,
         Quantity: data.quantity,
         Price: data.money,
-        Date_Incurred: data.date,
+        Date: data.date,
       };
 
       await pb.collection('Expenses').create(newExpense);
@@ -70,9 +72,11 @@ export function InputForm({ onClose }: InputFormProps) {
       reset();
 
       // Close the dialog and trigger data fetch
+      setLoading(false);
       setIsDialogOpen(false);
       onClose();  // Fetch the updated expenses after form submission
     } catch (error) {
+      setLoading(false);
       toast({
         title: "Tatizo",
         description:`Kuna tatizo la kiufundi`,
@@ -188,7 +192,7 @@ export function InputForm({ onClose }: InputFormProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button loading={loading} type="submit">Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -8,6 +8,7 @@ import pb from '@/api/Pocketbase';
 import { loanSchema } from './data/schema';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
+import { useState } from 'react';
 
 // Define the type for the form data using the schema
 type LoanFormSchema = z.infer<typeof loanSchema>;
@@ -32,15 +33,18 @@ export function EditLoan({ isOpen, onOpenChange, stock }: EditDialogProps) {
     }
   });
 
+   const [loading, setLoading] = useState(false);
   // Handle form submission
   const onSubmit = async (data: LoanFormSchema) => {
     try {
+      setLoading(true);
       if (stock.id) {
         await pb.collection('Loans').update(stock.id, data);
         reset();
         onOpenChange(false);
        // Reload the page
       } else {
+        setLoading(false);
         console.error('Error: ID is undefined');
         toast({
           title: "Tatizo",
@@ -49,6 +53,7 @@ export function EditLoan({ isOpen, onOpenChange, stock }: EditDialogProps) {
         });
       }
     } catch (error) {
+      setLoading(false);
       console.error('Error updating loan record:', error);
       toast({
         title: "Tatizo",
@@ -89,7 +94,7 @@ export function EditLoan({ isOpen, onOpenChange, stock }: EditDialogProps) {
               <div className="col-span-3">
                 <Input
                   id="Amount"
-                  {...register('Amount')}
+                  {...register('Amount',{ valueAsNumber: true })}
                   placeholder="Loan Amount"
                   className="col-span-3"
                 />
@@ -119,7 +124,7 @@ export function EditLoan({ isOpen, onOpenChange, stock }: EditDialogProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button loading={loading} type="submit">Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

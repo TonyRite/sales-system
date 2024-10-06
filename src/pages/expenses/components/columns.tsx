@@ -83,7 +83,7 @@ export const columns = (getCustomers: () => void): ColumnDef<Expense>[] => [
     },
   },
   {
-    accessorKey: 'Date_Incurred',
+    accessorKey: 'Date',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Date_entered' />
     ),
@@ -91,7 +91,7 @@ export const columns = (getCustomers: () => void): ColumnDef<Expense>[] => [
       return (
         <div className='flex space-x-2'>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {(row.getValue('Date_Incurred') as string).toString().split(' ')[0]}
+            {(row.getValue('Date') as string).toString().split(' ')[0]}
           </span>
         </div>
       )

@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";  // Ensure you have this import
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
+import { useState } from 'react'
 
 // Define the type for the form data using the schema
 type ExpenseFormSchema = z.infer<typeof expenseSchema>
@@ -33,17 +34,21 @@ export function EditDialog({ isOpen, onOpenChange, expenses }: EditDialogProps) 
     defaultValues: expenses,  // Populate form with the selected row data
   })
 
+  const [loading, setLoading] = useState(false)
   // Handle form submission
   const onSubmit = async (data: ExpenseFormSchema) => {
     try {
+      setLoading(true)
       // Update the record in the database
       if (expenses.id) {
         await pb.collection('Expenses').update(expenses.id, data)
         // close box
         console.log(data)
         reset();
+        setLoading(false)
         onOpenChange(false)
       } else {
+        setLoading(false)
         console.error('Error: Cid is undefined')
         toast({
           title: "Tatizo",
@@ -52,6 +57,7 @@ export function EditDialog({ isOpen, onOpenChange, expenses }: EditDialogProps) 
         });
       }
     } catch (error) {
+      setLoading(false)
       toast({
         title: "Tatizo",
         description:`Kuna tatizo la kiufundi`,
@@ -115,12 +121,12 @@ export function EditDialog({ isOpen, onOpenChange, expenses }: EditDialogProps) 
             </div>
 
             <div className='grid grid-cols-4 items-center gap-4'>
-              <label htmlFor='Date_Incurred' className='text-right'>
+              <label htmlFor='Date' className='text-right'>
                 Date
               </label>
               <div className='col-span-3'>
                 <Controller
-                  name="Date_Incurred"
+                  name="Date"
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <Popover>
@@ -146,12 +152,12 @@ export function EditDialog({ isOpen, onOpenChange, expenses }: EditDialogProps) 
                     </Popover>
                   )}
                 />
-                {errors.Date_Incurred && <p className='text-red-600 mt-1 text-sm'>{errors.Date_Incurred.message}</p>}
+                {errors.Date && <p className='text-red-600 mt-1 text-sm'>{errors.Date.message}</p>}
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button type='submit'>Save changes</Button>
+            <Button loading={loading} type='submit'>Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -13,7 +13,7 @@ import Loader from '@/components/loader';
 import { toast } from '@/components/ui/use-toast';
 
 export interface ExpenseRecord {
-  Date_Incurred: string;     // Date when the expense was incurred
+  Date: string;     // Date when the expense was incurred
   Name: string;              // Name of the expense item
   Price: number;             // Price of the expense
   Quantity: number;          // Quantity of the expense
@@ -41,7 +41,7 @@ export default function Tasks() {
           Name: item.Name,
           Price: item.Price,
           Quantity: item.Quantity,
-          Date_Incurred: item.Date_Incurred,
+          Date: item.Date,
         }));
   
         // Update state with the fetched data
@@ -82,7 +82,7 @@ export default function Tasks() {
     Name: Expense.Name,
     Price: Expense.Price,
     Quantity: Expense.Quantity,
-    Date_Incurred: Expense.Date_Incurred.toString(),
+    Date: Expense.Date.toString(),
   }));
 
   const location = useLocation();

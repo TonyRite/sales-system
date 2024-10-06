@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";  // Ensure you have this import
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 // Define Zod schema for form validation
@@ -56,6 +56,7 @@ export function InputForm({ onClose }: InputFormProps) {
 
   const { toast } = useToast(); // Use the toast hook
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: CustomerFormSchema) => {
   
@@ -63,6 +64,7 @@ export function InputForm({ onClose }: InputFormProps) {
       name.toLowerCase().replace(/\b\w/g, (char: string) => char.toUpperCase());
   
     try {
+      setLoading(true);
       // 1. Find the customer by name
       let findingId = await pb.collection('Customers').getFullList({
         filter: `Name="${formatName(data.CustomerName)}"`,
@@ -75,14 +77,16 @@ export function InputForm({ onClose }: InputFormProps) {
           CustomerId: customerId,
           Amount: data.Pesa,
           Status:'Not Paid',
-          DateIssued: data.Date,
+          Date: data.Date,
         };
         await pb.collection('Loans').create(newLoan);
         reset();
         setIsDialogOpen(false);
         onClose();  // Fetch the updated expenses after form submission
+        setLoading(false);
       } else {
         // 4. If not found, show a toast message
+        setLoading(false);
         toast({
           title: "Tatizo",
           description:`${data.CustomerName} hana Mzigo hawez pata mkopo`,
@@ -92,6 +96,7 @@ export function InputForm({ onClose }: InputFormProps) {
         setIsDialogOpen(false);
       }
     } catch (error) {
+      setLoading(false);
       console.error('Error creating expense record:', error);
       toast({
         title: "Tatizo",
@@ -238,7 +243,7 @@ export function InputForm({ onClose }: InputFormProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+           <Button loading={loading} type="submit">Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>
