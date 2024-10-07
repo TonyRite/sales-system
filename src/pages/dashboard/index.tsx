@@ -38,14 +38,16 @@ export default function Dashboard() {
   
       // Set up the filter string based on the input
       let loanFilter = '';
+      let StockFilter ="Status = 'Not Paid'";
       if (filterDates && filterDates.startDate && filterDates.endDate) {
         loanFilter = `Date >= '${filterDates.startDate}' && Date <= '${filterDates.endDate}'`;
+        StockFilter += ` && Date >= '${filterDates.startDate}' && Date <= '${filterDates.endDate}'`;
         // loanFilter = `Date >= '2024-09-29 0:00:00' && Date <= '2024-10-06 00:00:00'`
       }
   
       // Fetch loans data with optional date filters
       let loanData = await pb.collection('Loans').getFullList({
-        filter: loanFilter
+        filter: StockFilter
       });
       const sumOfAmounts = loanData.length
         ? loanData.reduce((sum, item) => sum + item.Amount, 0)
