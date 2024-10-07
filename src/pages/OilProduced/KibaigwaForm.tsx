@@ -62,7 +62,7 @@ export function InputForm({ onClose }: InputFormProps) {
 
   const onSubmit = async (data: CustomerFormSchema) => {
     const formatName = (name: string) =>
-      name.toLowerCase().replace(/\b\w/g, (char: string) => char.toUpperCase());
+      name.trim().toLowerCase().replace(/\b\w/g, (char: string) => char.toUpperCase());
 
     try {
       setLoading(true);

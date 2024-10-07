@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { loanSchema } from '../data/schema'
 import { EditLoan } from '../EditLoan'
+import { DeleteLoan } from '../deleteLoan'
 
 
 interface DataTableRowActionsProps<TData> {
@@ -28,10 +29,24 @@ export function DataTableRowActions<TData>({
   // State for managing the edit dialog
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
+  // State for managing the delete dialog
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   // Handle opening the dialog
   const handleEditClick = () => {
     setIsEditDialogOpen(true);
   };
+
+  // Handle opening the dialog
+  const handleDeleteClick = () => {
+    setIsDeleteDialogOpen(true);
+  }
+
+  // close and reload 
+  const handleCloseDelete = () => {
+    setIsDeleteDialogOpen(false);
+    getCustomers();
+  }
 
   // Close the dialog and reload the page
   const handleCloseDialog = () => {
@@ -58,7 +73,7 @@ export function DataTableRowActions<TData>({
             Edit
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleDeleteClick}>
             Delete
             <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
           </DropdownMenuItem>
@@ -69,6 +84,13 @@ export function DataTableRowActions<TData>({
       <EditLoan
         isOpen={isEditDialogOpen}
         onOpenChange={handleCloseDialog} // Use the handleCloseDialog to close and reload
+        stock={LoanStock}  // Pass the selected row's data to the dialog
+      />
+
+      {/* delete */}
+      <DeleteLoan
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={handleCloseDelete} // Use the handleCloseDialog to close and reload
         stock={LoanStock}  // Pass the selected row's data to the dialog
       />
     </>
