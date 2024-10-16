@@ -47,10 +47,10 @@ export default function Tasks() {
   const getCustomers = async () => {
     try{
      pb.autoCancellation(false);
-    const customers = await pb.collection('Stocks').getList(1, 50, {expand:'CustomerId'});
+    const customers = await pb.collection('Stocks').getFullList({expand:'CustomerId'});
 
-    if (customers && customers.items.length > 0){
-      const customerData = customers.items.map((item,index) => ({
+    if (customers && customers.length > 0){
+      const customerData = customers.map((item,index) => ({
         id:item.id,
         Cid: (index + 1),
         // id:1,

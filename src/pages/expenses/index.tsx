@@ -30,12 +30,12 @@ export default function Tasks() {
       pb.autoCancellation(false);
   
       // Fetch expenses data (page 1, limit 50)
-      const customers = await pb.collection('Expenses').getList(1, 50, {});
+      const customers = await pb.collection('Expenses').getFullList({});
   
       // Check if data was retrieved
-      if (customers && customers.items.length > 0) {
+      if (customers && customers.length > 0) {
         // Map and transform the data into a usable format
-        const expensesData = customers.items.map((item, index) => ({
+        const expensesData = customers.map((item, index) => ({
           Cid: index + 1,
           id: item.id,
           Name: item.Name,
