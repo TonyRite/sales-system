@@ -1,13 +1,17 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/custom/button';
 import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import pb from '@/api/Pocketbase';
 import { customerSchema } from './data/schema';
 import { toast } from '@/components/ui/use-toast';
 import { useState } from 'react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
 
 
 // Define the type for the form data using the schema
@@ -25,6 +29,7 @@ export function EditStock({ isOpen, onOpenChange, stock }: EditDialogProps) {
     register,
     handleSubmit,
     formState: { errors },
+    control,
     reset,
   } = useForm<CustomerFormSchema>({
     resolver: zodResolver(customerSchema),
@@ -116,6 +121,42 @@ export function EditStock({ isOpen, onOpenChange, stock }: EditDialogProps) {
                   className='w-full'
                 />
                 {errors.Mafuta && <p className='text-red-600 mt-1 text-sm'>{errors.Mafuta.message}</p>}
+              </div>
+            </div>
+
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <label htmlFor='Date' className='text-right'>
+                Date
+              </label>
+              <div className='col-span-3'>
+                <Controller
+                  name="Date"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={`w-full justify-start text-left font-normal ${!value ? "text-muted-foreground" : ""}`}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {value ? format(new Date(value), "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={value ? new Date(value) : undefined}
+                          onSelect={(date) => {
+                            onChange(date ? format(date, "yyyy-MM-dd") : ""); // Store formatted date
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                />
+                {errors.Date && <p className='text-red-600 mt-1 text-sm'>{errors.Date.message}</p>}
               </div>
             </div>
           </div>
