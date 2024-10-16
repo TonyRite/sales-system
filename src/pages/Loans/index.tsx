@@ -47,10 +47,10 @@ export default function Tasks() {
   const getLoans = async () => {
     try{
      pb.autoCancellation(false);
-    const customers = await pb.collection('Loans').getList(1, 50, {expand:'CustomerId'});
+    const customers = await pb.collection('Loans').getFullList({expand:'CustomerId'});
 
-    if(customers && customers.items.length > 0 ){
-      const customerData = customers.items.map((item,index) => ({
+    if(customers && customers.length > 0 ){
+      const customerData = customers.map((item,index) => ({
         Cid: (index+1),
         id:item.id,
         CustomerId: item.CustomerId,                // Assuming you want to keep the CustomerId
